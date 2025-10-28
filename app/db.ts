@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@/app/generated/prisma'
 import { genSaltSync, hashSync } from 'bcrypt-ts'
 
 // Prisma è un ORM (Object-Relational Mapping).
