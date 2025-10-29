@@ -1,15 +1,11 @@
-import NextAuth from 'next-auth';
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from 'bcrypt-ts';
+import {compare, genSaltSync, hashSync} from 'bcrypt-ts';
 import { getUser } from './db';
 import { authConfig } from './auth.config';
+import { NextAuthConfig } from "next-auth";
 
-export const {
-    handlers: { GET, POST },
-    auth,
-    signIn,
-    signOut,
-} = NextAuth({
+
+export const authOptions: NextAuthConfig = {
     ...authConfig,
     providers: [
         CredentialsProvider({
@@ -18,25 +14,43 @@ export const {
                 email: { label: "Email", type: "text" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
+            async authorize(credentials) {
 
-                const username = credentials?.email;
+                const email = credentials?.email;
                 const password = credentials?.password;
 
-                if (!username || !password) {
+                console.log(" Tentativo di login per:", email);
+
+                if (!email || !password) {
+                    console.error("Mancano email o password");
                     throw new Error("Email e password sono obbligatori");
                 }
 
-                const user = await getUser(username as string);
-                if (user.length === 0) return null;
-                const passwordsMatch = await compare(password as string, user[0].password!);
-                if (!passwordsMatch) return null;
+                const user = await getUser(email as string);
+                if (!user) {
+                    console.error("Utente non trovato nel database");
+                    return null;
+                }
+
+                console.log("Utente trovato:", user.email);
+
+                const passwordsMatch = await compare(password as string, user.password!);
+
+                console.log("Password corretta?", passwordsMatch);
+
+                if (!passwordsMatch) {
+                    console.error("Password errata per:", email);
+                    return null;
+                }
+
+                console.log("Login riuscito per:", email);
+
                 return {
-                    id: user.id,
+                    id: user.id.toString(),  //NextAuth richiede un ID stringa, mentre Prisma lo genera come int
                     email: user.email,
-                    ...user
                 };
             },
         }),
     ],
-});
+    secret: process.env.AUTH_SECRET,
+}

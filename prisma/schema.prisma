@@ -12,10 +12,13 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["user_database"]
 }
 
 model User {
   id       Int    @id @default(autoincrement())
   email    String @unique @db.VarChar(64)
   password String @db.VarChar(64)
+
+  @@schema("user_database")
 }

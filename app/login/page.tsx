@@ -1,5 +1,5 @@
 'use client';
-import { signIn } from 'next-auth/react';
+import { signIn } from "next-auth/react"
 import {FormEvent, useState} from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -15,15 +15,17 @@ export default function LoginForm() {
         const response = await signIn('credentials', {
             email: formData.get('email') as string,
             password: formData.get('password') as string,
-            redirect: false
+            redirect: true,
+            redirectTo: "/home",
+//            redirect: false
         });
-        if (response?.error) {
-            console.error('Errore di login:', response.error);
-            setError('Email o password non validi');
-        } else {
-            // Reindirizzamento alla home se l'autenticazione ha successo
-            router.push('/home');
-        }
+//        if (response?.error) {
+//            console.error('Errore di login:', response.error);
+//            setError('Email o password non validi');
+//        } else {
+//            // Reindirizzamento alla home se l'autenticazione ha successo
+//          router.push('/home');
+//        }
     };
 
     return (
