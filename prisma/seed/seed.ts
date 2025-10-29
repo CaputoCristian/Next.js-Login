@@ -4,7 +4,7 @@ import { hashSync, genSaltSync } from 'bcrypt-ts'
 const prisma = new PrismaClient()
 
 async function main() {
-    const existingUser = await prisma.user.findUnique({
+        const existingUser = await prisma.user.findUnique({
         where: {
             email: 'admin@example.com'
         }

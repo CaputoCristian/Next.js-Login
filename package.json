@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "node prisma/seed/seed.js"
+    "seed": "node prisma/seed/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
@@ -29,6 +29,6 @@
     "typescript": "^5.9.3"
   },
   "prisma": {
-    "seed": "node prisma/seed/seed.js"
+    "seed": "node prisma/seed/seed.ts"
   }
 }
