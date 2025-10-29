@@ -31,7 +31,6 @@ export default function LoginForm() {
     return (
         <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-100">
             <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl">
-                {/* Header */}
                 <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
                     <h3 className="text-2xl font-semibold text-white">Sign In</h3>
                     <p className="text-sm text-gray-400">
@@ -88,6 +87,14 @@ export default function LoginForm() {
                 Sign in
             </button>
         </form>
+
+                <p className="text-sm text-gray-400 text-center mt-4">
+                    Don't have an account?{" "}
+                    <a href="/register" className="text-blue-400 hover:underline">
+                        Sign Up
+                    </a>
+                </p>
+
 
             </div>
         </div>
