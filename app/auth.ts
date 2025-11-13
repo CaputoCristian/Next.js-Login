@@ -2,8 +2,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import {compare, genSaltSync, hashSync} from 'bcrypt-ts';
 import { getUser } from './db';
 import { authConfig } from './auth.config';
-import { NextAuthConfig } from "next-auth";
+import NextAuth, { NextAuthConfig } from "next-auth";
 
+export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
 
 export const authOptions: NextAuthConfig = {
     ...authConfig,

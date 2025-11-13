@@ -2,10 +2,14 @@
 import { signIn } from "next-auth/react"
 import {FormEvent, useState} from 'react';
 import { useRouter } from 'next/navigation';
+import {Eye, EyeOff} from "lucide-react";
 
 export default function LoginForm() {
     const router = useRouter();
     const [error, setError] = useState<string>('');
+
+    const [isVisible, setIsVisible] = useState(false);
+    const toggleVisibility = () => setIsVisible(prevState => !prevState);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -56,25 +60,41 @@ export default function LoginForm() {
             </div>
 
             <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className=" mt-1 block text-sm font-medium text-gray-700">
                     Password
                 </label>
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2
+                <div className="relative">
+
+                    <input
+                        id="password"
+                        name="password"
+                        type={isVisible ? "text" : "password"}
+                        required
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2
                              text-sm placeholder-gray-400 shadow-sm focus:border-blue-500
                              focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="Inserisci la tua password"
-                />
-
-                {error && (
-                    <p className="text-red-400 text-sm mb-3 text-center">{error}</p>
-                )}
-
+                        placeholder="Inserisci la tua password"
+                    />
+                    <button
+                        className="absolute right-2 flex items-center z-20 cursor-pointer top-1/2 -translate-y-1/2
+                            text-gray-400 rounded-e-md focus:outline-none focus-visible:text-indigo-500 hover:text-indigo-500 transition-colors"
+                        type="button"
+                        onClick={toggleVisibility}
+                        aria-label={isVisible ? "Hide password" : "Show password"}
+                        aria-pressed={isVisible}
+                        aria-controls="password"
+                    >
+                        {isVisible ? (
+                            <EyeOff size={20} aria-hidden="true" />
+                        ) : (
+                            <Eye size={20} aria-hidden="true" />
+                        )}
+                    </button>
+                </div>
             </div>
+
+
+
 
             <button
                 type="submit"
@@ -89,7 +109,7 @@ export default function LoginForm() {
         </form>
 
                 <p className="text-sm text-gray-400 text-center mt-4">
-                    Don't have an account?{" "}
+                    Don&#39;t have an account?{" "}
                     <a href="/register" className="text-blue-400 hover:underline">
                         Sign Up
                     </a>

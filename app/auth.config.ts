@@ -10,14 +10,12 @@ export const authConfig: NextAuthConfig = {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
             const isOnHome = nextUrl.pathname.startsWith('/home');
-
             if (isOnHome) {
-                return isLoggedIn;
-                 // Redirect unauthenticated users to login page
+                if (isLoggedIn) return true;
+                return false; // Redirect unauthenticated users to login page
             } else if (isLoggedIn) {
                 return Response.redirect(new URL('/home', nextUrl));
             }
-
             return true;
         },
     },
