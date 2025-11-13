@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0f2d5286-b34d-4767-93b3-d27330cd0461" name="Changes" comment="Eliminazione file inutili, piccole modifiche al testo">
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;CaputoCristian&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/CaputoCristian/Next.js-Login.git&quot;,
+    &quot;accountId&quot;: &quot;71a834cc-bb0b-4868-b468-026e83431ba8&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="34em4ysJtWUNsjFtTuMn4DYxAz0" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.Next.js: debug client-side.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Next.js: server-side.executor&quot;: &quot;Run&quot;,
+    &quot;npm.seed.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.AIAssistantPromptsLibrary&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\caput\\OneDrive\\Universita\\Triennale\\Tesi di Laurea\\Progetto\\app-login\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;TypeScript JSX&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\caput\OneDrive\Universita\Triennale\Tesi di Laurea\Progetto\app-login\prisma\seed" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="seed" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="seed" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.seed" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.28293.22" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.28293.22" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0f2d5286-b34d-4767-93b3-d27330cd0461" name="Changes" comment="" />
+      <created>1761582224582</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761582224582</updated>
+      <workItem from="1761582225542" duration="9454000" />
+      <workItem from="1761595019085" duration="206000" />
+      <workItem from="1761595797411" duration="119000" />
+      <workItem from="1761595928003" duration="863000" />
+      <workItem from="1761597365180" duration="605000" />
+      <workItem from="1761599676330" duration="2000" />
+      <workItem from="1761671878263" duration="347000" />
+      <workItem from="1761672546901" duration="10203000" />
+      <workItem from="1761726232344" duration="182000" />
+      <workItem from="1761758870121" duration="8493000" />
+      <workItem from="1761768196835" duration="334000" />
+      <workItem from="1761773041870" duration="15000" />
+      <workItem from="1761778192816" duration="1044000" />
+      <workItem from="1761779480991" duration="572000" />
+      <workItem from="1761780773440" duration="161000" />
+    </task>
+    <task id="LOCAL-00001" summary="Logica di autenticazione e DB. Todo gui">
+      <option name="closed" value="true" />
+      <created>1761672070452</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1761672070452</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Risolto errore nel provider di prisma">
+      <option name="closed" value="true" />
+      <created>1761673561960</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1761673561960</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Schermata di login funzionante, rivedere errore nell'invio cred">
+      <option name="closed" value="true" />
+      <created>1761726410574</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1761726410574</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Login funzionante, da aggiungere caso password/email errati e registrazione">
+      <option name="closed" value="true" />
+      <created>1761762736042</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1761762736042</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Aggiunto avviso di credenziali errate">
+      <option name="closed" value="true" />
+      <created>1761763198314</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1761763198314</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Aggiunta la registrazione. Prima versione funzionante di schermata">
+      <option name="closed" value="true" />
+      <created>1761766647658</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1761766647658</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Eliminazione file inutili, piccole modifiche al testo">
+      <option name="closed" value="true" />
+      <created>1761767800542</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1761767800542</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/prisma/seed/seed.js" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Logica di autenticazione e DB. Todo gui" />
+    <MESSAGE value="Risolto errore nel provider di prisma" />
+    <MESSAGE value="Schermata di login funzionante, rivedere errore nell'invio cred" />
+    <MESSAGE value="Login funzionante, da aggiungere caso password/email errati e registrazione" />
+    <MESSAGE value="Aggiunto avviso di credenziali errate" />
+    <MESSAGE value="Aggiunta la registrazione. Prima versione funzionante di schermata" />
+    <MESSAGE value="Eliminazione file inutili, piccole modifiche al testo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Eliminazione file inutili, piccole modifiche al testo" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
