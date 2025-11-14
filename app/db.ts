@@ -26,3 +26,61 @@ export async function createUser(email: string, password: string) {
         }
     })
 }
+
+export async function createToken(email: string) {
+    const salt = genSaltSync(10)
+    const token = Math.floor(100000 + Math.random() * 900000).toString() //6 Cifre
+    const hash = hashSync(token, salt)
+
+    const date = new Date();
+
+    const existing_token = await prisma.token.findUnique({
+        where: { email },
+    });
+
+    if (existing_token) {
+        await prisma.token.update({
+        where: { email },
+        data: {
+            token: token,
+            creation_time: date,
+        },
+    });
+    } else {
+            await prisma.token.create({
+                data: {
+                    email,
+                    token: token,
+                    creation_time: date,
+                },
+            });
+        }
+    return token;
+
+}
+
+
+export async function verifyOtp(email: string, otp: string) {
+    const record = await prisma.token.findUnique({
+        where: { email },
+    });
+
+    if (!record) return false;
+
+    if (record.token !== otp) return false;
+
+    // Controllo validità, il token scade dopo 5 minuti. Postgress e Prisma non permettono di farlo scadere in automatico
+    const ageMs = Date.now() - record.creation_time.getTime();
+    const maxAge = 5 * 60 * 1000;
+
+    if (ageMs > maxAge) return false;
+
+    return true;
+}
+
+//Il token va eliminato dopo un login riuscito
+export async function deleteOtp(email: string) {
+    await prisma.token.delete({
+        where: { email },
+    }).catch(() => {});
+}

@@ -11,19 +11,30 @@ export default function LoginForm() {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(prevState => !prevState);
 
+    const [showOTP, setShowOTP] = useState<boolean>(false);
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(''); // Resetta eventuali errori precedenti
+
         const formData = new FormData(e.currentTarget);
 
         const response = await signIn('credentials', {
             email: formData.get('email') as string,
             password: formData.get('password') as string,
+            otp: formData.get('otp') as string,
 //            redirect: true,
 //            redirectTo: "/home",
             redirect: false
         });
+
         if (response?.error) {
+
+            if (response.error === "Richiesta autenticazione a due fattori.") {
+                setShowOTP(true);
+                return;
+            }
+
             console.error('Errore di login:', response.error);
             setError('Email o password non validi');
         } else {
@@ -43,57 +54,88 @@ export default function LoginForm() {
                 </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email
-                </label>
-                <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2
+
+            {!showOTP && (
+
+                <>
+
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            required
+                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2
                              text-sm placeholder-gray-400 shadow-sm focus:border-blue-500
                              focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="Inserisci la tua email"
-                />
-            </div>
+                            placeholder="Inserisci la tua email"
+                        />
+                    </div>
 
-            <div>
-                <label htmlFor="password" className=" mt-1 block text-sm font-medium text-gray-700">
-                    Password
-                </label>
-                <div className="relative">
+                    <div>
+                        <label htmlFor="password" className=" mt-1 block text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <div className="relative">
+
+                            <input
+                                id="password"
+                                name="password"
+                                type={isVisible ? "text" : "password"}
+                                required
+                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2
+                             text-sm placeholder-gray-400 shadow-sm focus:border-blue-500
+                             focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                placeholder="Inserisci la tua password"
+                            />
+                            <button
+                                className="absolute right-2 flex items-center z-20 cursor-pointer top-1/2 -translate-y-1/2
+                            text-gray-400 rounded-e-md focus:outline-none focus-visible:text-indigo-500 hover:text-indigo-500 transition-colors"
+                                type="button"
+                                onClick={toggleVisibility}
+                                aria-label={isVisible ? "Hide password" : "Show password"}
+                                aria-pressed={isVisible}
+                                aria-controls="password"
+                            >
+                                {isVisible ? (
+                                    <EyeOff size={20} aria-hidden="true" />
+                                ) : (
+                                    <Eye size={20} aria-hidden="true" />
+                                )}
+                            </button>
+                        </div>
+                    </div>
+
+                </>
+            )}
+
+
+            {showOTP && (
+
+                <>
+
+
 
                     <input
-                        id="password"
-                        name="password"
-                        type={isVisible ? "text" : "password"}
+                        id="otp"
+                        name="otp"
                         required
                         className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2
                              text-sm placeholder-gray-400 shadow-sm focus:border-blue-500
                              focus:outline-none focus:ring-1 focus:ring-blue-500"
-                        placeholder="Inserisci la tua password"
+                        placeholder="Inserisci il codice"
                     />
-                    <button
-                        className="absolute right-2 flex items-center z-20 cursor-pointer top-1/2 -translate-y-1/2
-                            text-gray-400 rounded-e-md focus:outline-none focus-visible:text-indigo-500 hover:text-indigo-500 transition-colors"
-                        type="button"
-                        onClick={toggleVisibility}
-                        aria-label={isVisible ? "Hide password" : "Show password"}
-                        aria-pressed={isVisible}
-                        aria-controls="password"
-                    >
-                        {isVisible ? (
-                            <EyeOff size={20} aria-hidden="true" />
-                        ) : (
-                            <Eye size={20} aria-hidden="true" />
-                        )}
-                    </button>
-                </div>
-            </div>
+
+                </>
+                    )}
 
 
+            {error && (
+                <p className="text-red-400 text-sm">{error}</p>
+            )}
 
 
             <button
@@ -104,18 +146,19 @@ export default function LoginForm() {
                  focus:outline-none focus:ring-2 focus:ring-blue-500
                  active:scale-[0.98]"
             >
-                Sign in
+                {showOTP ? "Verify code" : "Login"}
             </button>
         </form>
 
+                {!showOTP && (
                 <p className="text-sm text-gray-400 text-center mt-4">
                     Don&#39;t have an account?{" "}
                     <a href="/register" className="text-blue-400 hover:underline">
                         Sign Up
                     </a>
                 </p>
-
-
+                    )}
+                
             </div>
         </div>
     );

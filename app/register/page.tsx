@@ -11,6 +11,8 @@ export default function RegisterPage() {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(prevState => !prevState);
 
+    const [showOTP, setShowOTP] = useState<boolean>(false);
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError("");
@@ -160,12 +162,16 @@ export default function RegisterPage() {
                     </button>
                 </form>
 
-                <p className="text-sm text-gray-400 text-center mt-4">
+                {!showOTP && (
+                    <p className="text-sm text-gray-400 text-center mt-4">
                     Already have an account?{" "}
                     <a href="/login" className="text-blue-400 hover:underline">
                         Sign In
                     </a>
                 </p>
+
+                )}
+
             </div>
         </div>
     );

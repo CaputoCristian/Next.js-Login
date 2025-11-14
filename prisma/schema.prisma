@@ -16,9 +16,19 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique @db.VarChar(64)
-  password String @db.VarChar(64)
+  id           Int     @id @default(autoincrement())
+  email        String  @unique @db.VarChar(64)
+  password     String  @db.VarChar(64)
+  tfa_required Boolean @default(true)
+
+  @@schema("user_database")
+}
+
+model Token {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique @db.VarChar(64)
+  token         String   @db.VarChar(64)
+  creation_time DateTime
 
   @@schema("user_database")
 }
