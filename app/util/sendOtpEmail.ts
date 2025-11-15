@@ -1,20 +1,21 @@
-import nodemailer from "nodemailer";
+'use server'
+
+import {Resend} from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY!);
+
+resend.domains.verify('5e4d5e4d-5e4d-5e4d-5e4d-5e4d5e4d5e4d');
 
 export async function sendOtpEmail(to: string, otp: string) {
-    try {
-        // Viene creato un transporter Simple Mail Transfer Protocol (SMTP)
-        const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST!,
-            port: Number(process.env.SMTP_PORT!),
-            secure: false, // La connessione sulla porta 587 è già sicura di suo
-            auth: {
-                user: process.env.SMTP_USER!,
-                pass: process.env.SMTP_PASS!,
-            },
-        });
+    if (!process.env.RESEND_API_KEY) {
+        throw new Error("Missing RESEND_API_KEY");
+    }
 
-        // HTML dell’email OTP
-        const html = `
+    const subject = "Il tuo codice di verifica";
+
+
+    // HTML dell’email OTP
+    const html = `
       <div style="font-family: Arial; padding: 20px;">
         <h2>Il tuo codice di verifica</h2>
         <p>Usa il seguente codice per completare il login:</p>
@@ -30,17 +31,18 @@ export async function sendOtpEmail(to: string, otp: string) {
       </div>
     `;
 
-        // Invia la mail
-        await transporter.sendMail({
-            from: `"Node.js Auth" <${process.env.SMTP_USER!}>`,
-            to,
-            subject: "Il tuo codice OTP per accedere",
-            html,
-        });
+    const { data, error } = await resend.emails.send({
+        from: 'Auth <noreply@resend.dev>',
+        to: [to],
+        subject,
+        html,
+    });
 
-        console.log("OTP email inviato a", to);
-    } catch (err) {
-        console.error("Errore nell'invio dell OTP:", err);
+    if (error) {
+        console.error("Resend error:", error);
         throw new Error("EMAIL_SEND_FAILED");
     }
+
+    // data.id contiene l'id della mail inviata (utile per log)
+    return data;
 }

@@ -3,8 +3,6 @@ import {compare, genSaltSync, hashSync} from 'bcrypt-ts';
 import {createToken, getUser, verifyOtp} from './db';
 import { authConfig } from './auth.config';
 import NextAuth, { NextAuthConfig } from "next-auth";
-import {sendOtpEmail} from "@/app/util/sendOtpEmail";
-import Nodemailer from "@auth/core/providers/nodemailer";
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
 
@@ -51,7 +49,15 @@ export const authOptions: NextAuthConfig = {
                 //Two-Factor-Authentication
                 if (user.tfa_required && !totpCode) {
                         const otp = await createToken(email as string);
-                        await sendOtpEmail(user.email, otp);
+
+                    // dynamic import — questo avviene durante l'esecuzione (Node) e NON al bundle del middleware
+                    //const { sendOtpEmail } = await import('@/app/util/sendOtpEmail'); // file che usa nodemailer
+                    //    await sendOtpEmail(user.email, otp);
+
+
+                    const res = await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
+
+
                         console.log("Creazione otp e invio mail per:", email);
                         throw new Error("Richiesta autenticazione a due fattori.");
 

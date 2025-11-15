@@ -33,10 +33,11 @@ export default function LoginForm() {
             if (response.error === "Richiesta autenticazione a due fattori.") {
                 setShowOTP(true);
                 return;
+            } else {
+                console.error('Errore di login:', response.error);
+                setError('Email o password non validi');
             }
 
-            console.error('Errore di login:', response.error);
-            setError('Email o password non validi');
         } else {
             // Reindirizzamento alla home se l'autenticazione ha successo
           router.push('/home');
