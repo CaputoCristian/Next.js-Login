@@ -59,21 +59,26 @@ export async function createToken(email: string) {
 
 }
 
+export async function getToken(email: string) {
+    return prisma.token.findUnique({
+        where: {
+            email: email
+        }
+    });
+}
 
 export async function verifyOtp(email: string, otp: string) {
-    const record = await prisma.token.findUnique({
-        where: { email },
-    });
+    const record = await getToken(email);
 
     if (!record) return false;
 
-    if (record.token !== otp) return false;
+    if (record.token !== otp) throw new Error('Invalid OTP') ;
 
     // Controllo validità, il token scade dopo 5 minuti. Postgress e Prisma non permettono di farlo scadere in automatico
     const ageMs = Date.now() - record.creation_time.getTime();
     const maxAge = 5 * 60 * 1000;
 
-    if (ageMs > maxAge) return false;
+    if (ageMs > maxAge) throw new Error('OTP expired');
 
     return true;
 }
