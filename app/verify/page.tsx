@@ -49,7 +49,8 @@ export default function VerifyOtp() {
 
             await update({ pending2FA: false });
 
-            router.push("/home");
+            //router.push("/home");
+            router.replace("/home");
         }
 
         await update({ pending2FA: false });

@@ -1,6 +1,7 @@
 import { auth } from "@/app/auth";
 import {NextRequest, NextResponse} from "next/server";
 import type { NextAuthRequest } from "next-auth";
+import { getToken } from "next-auth/jwt";
 
 type ReqWithAuth = NextRequest & {
     auth?: {
@@ -12,12 +13,19 @@ type ReqWithAuth = NextRequest & {
     };
 };
 
-export default auth((req: NextAuthRequest) => {
-    const { nextUrl } = req;
-    const pathname = nextUrl.pathname;
-    const user = req.auth?.user ?? null;
-    const isLoggedIn = !!user;
-    const isPending2FA = !!user?.pending2FA;
+//export default auth((req: NextAuthRequest) => {
+export async function middleware(req) {
+    const {pathname} = req.nextUrl;
+    //const { nextUrl } = req;
+    //const pathname = nextUrl.pathname;
+    //const user = req.auth?.user ?? null;
+    const token = await getToken({req, secret: process.env.AUTH_SECRET});
+    const isLoggedIn = !!token;
+    const isPending2FA = token?.pending2FA === true;
+    //const isLoggedIn = !!user;
+    //const isPending2FA = !!user?.pending2FA;
+
+    console.log("[MIDDLEWARE] path:", req.nextUrl.pathname, "auth present?", !!req.auth);
 
     if (pathname.startsWith("/home")) {
         if (!isLoggedIn) {
@@ -51,8 +59,9 @@ export default auth((req: NextAuthRequest) => {
     }
 
     return NextResponse.next();
-});
+//});
+}
 
 export const config = {
-    matcher: ["/home/:path*", "/login", "/register"],
+    matcher: ["/home/:path*", "/login", "/register", "/verify"],
 };
