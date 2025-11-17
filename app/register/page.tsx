@@ -53,10 +53,8 @@ export default function RegisterPage() {
 
         }
 
-        //Non più necessario, al cambio di token si viene reindirizzati in automatico.
-
-        //setSuccess("Registrazione completata! Ora puoi accedere.");
-        //setTimeout(() => router.push("/verify"), 1500);
+        setSuccess("Registrazione completata! Ora puoi accedere.");
+        setTimeout(() => router.push("/verify"), 1500);
 
 
     };

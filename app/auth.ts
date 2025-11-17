@@ -1,6 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import {compare, genSaltSync, hashSync} from 'bcrypt-ts';
-import {createToken, getToken, getUser, verifyOtp} from './db';
+import {createToken, getToken, getUser} from './db';
 import { authConfig } from './auth.config';
 import NextAuth, {AuthError, NextAuthConfig} from "next-auth";
 import {NextResponse} from "next/server";

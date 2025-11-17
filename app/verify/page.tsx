@@ -2,6 +2,7 @@
 import {useSession} from "next-auth/react"
 import {FormEvent, useState} from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut } from "next-auth/react";
 
 export default function VerifyOtp() {
     const router = useRouter();
@@ -36,6 +37,9 @@ export default function VerifyOtp() {
             else if (res.status === 409) {
                 setError("OTP non valido. Riprova.")
             }
+            else if (res.status === 408) {
+                setError("OTP scaduto. Riprova.")
+            }
             else {
                 setError("Errore nella verifica");
             }
@@ -62,18 +66,32 @@ export default function VerifyOtp() {
         const res = await fetch("/api/resend-otp", { method: "POST" });
 
         if (res.status == 200) {
-            setMessage("Controlla la tua mail per il nuovo codice.");
+            setMessage("Controlla la tua mail.");
             return;
         }
 
     }
 
+    async function handleBack() {
+        await signOut({ redirectTo: "/login" });
+    }
+
     return (
         <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-100">
             <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl">
-                <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
-                    <h3 className="text-2xl font-semibold text-white">
-                        Autenticazione a due fattori.
+                <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16 relative ">
+                    <div className="absolute top-4 left-4 pb-6">
+                        <button
+                            onClick={handleBack}
+                            className="flex items-center gap-1 text-gray-400 hover:text-gray-200 underline"
+                        >
+                            <span className="text-lg">←</span>
+                            <span>Torna indietro</span>
+                        </button>
+                    </div>
+
+                    <h3 className="text-2xl font-semibold text-white mt-8">
+                        Autenticazione a due fattori
                     </h3>
                     <p className="text-sm text-gray-400">
                         Inserisci il codice ricevuto via email.
@@ -86,6 +104,9 @@ export default function VerifyOtp() {
                                 id="otp"
                                 name="otp"
                                 required
+                                maxLength={6}
+                                inputMode="numeric"
+                                pattern="\d{6}"
                                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2
                              text-sm placeholder-gray-400 shadow-sm focus:border-blue-500
                              focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -117,7 +138,9 @@ export default function VerifyOtp() {
                     </button>
                 </p>
 
-                {message && <p>{message}</p>}
+                {message && <p className="text-center text-sm text-blue-400 mt-2">
+                    {message}
+                </p>}
 
             </div>
         </div>

@@ -42,7 +42,7 @@ export async function createToken(email: string) {
         await prisma.token.update({
         where: { email },
         data: {
-            token: token,
+            token: hash,
             creation_time: date,
         },
     });
@@ -67,6 +67,8 @@ export async function getToken(email: string) {
     });
 }
 
+
+//Non utilizzato, controllo avviene nella chiamata POST, migliore gestione degli errori.
 export async function verifyOtp(email: string, otp: string) {
     const record = await getToken(email);
 

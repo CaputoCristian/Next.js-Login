@@ -3,6 +3,7 @@ import {NextResponse} from "next/server";
 export const runtime = 'nodejs'; // forza Node runtime
 import { auth } from "@/app/auth";
 import {getToken} from '@/app/db';
+import {compare} from "bcrypt-ts";
 
 export async function POST(req: Request) {
 
@@ -22,7 +23,9 @@ export async function POST(req: Request) {
         { status: 401 }
         );
 
-    if (record.token !== otp)
+    const tokenMatch = await compare(otp as string, record.token);
+
+    if (!tokenMatch)
         return NextResponse.json(
         { error: "Invalid OTP" },
         { status: 409 }
