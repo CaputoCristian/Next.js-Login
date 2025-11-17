@@ -20,9 +20,9 @@ export const authConfig: NextAuthConfig = {
         },
         async jwt({ token, user, trigger, session }) {
 
-            console.log("JWT CALLBACK → token:", token);
-            console.log("JWT CALLBACK → trigger:", trigger);
-            console.log("JWT CALLBACK → session:", session);
+            //console.log("JWT CALLBACK → token:", token);
+            //console.log("JWT CALLBACK → trigger:", trigger);
+            //console.log("JWT CALLBACK → session:", session);
 
             if (user) {
                 token.id = user.id;
@@ -43,9 +43,8 @@ export const authConfig: NextAuthConfig = {
             session.user.email = token.email;
             session.user.pending2FA = token.pending2FA;
 
-            console.log("JWT CALLBACK IN SESSION→ token:", token);
-            console.log("JWT CALLBACK IN SESSION→ session:", session);
-
+            //console.log("JWT CALLBACK IN SESSION→ token:", token);
+            //console.log("JWT CALLBACK IN SESSION→ session:", session);
 
             return session;
         },

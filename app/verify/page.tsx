@@ -1,5 +1,5 @@
 'use client';
-import {signIn, useSession} from "next-auth/react"
+import {useSession} from "next-auth/react"
 import {FormEvent, useState} from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -8,12 +8,10 @@ export default function VerifyOtp() {
     const [error, setError] = useState<string>('');
     const [success, setSuccess] = useState("");
 
+    const [message, setMessage] = useState("");
+
     const { update } = useSession();
 
-    const [isVisible, setIsVisible] = useState(false);
-    const toggleVisibility = () => setIsVisible(prevState => !prevState);
-
-    const [showOTP, setShowOTP] = useState<boolean>(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,11 +30,11 @@ export default function VerifyOtp() {
         });
 
         if (!res.ok) {
-            if (res.status === 400) {
-                setError("");
+            if (res.status === 401) {
+                setError("L'utente non possiede un OTP");
             }
             else if (res.status === 409) {
-                setError("")
+                setError("OTP non valido. Riprova.")
             }
             else {
                 setError("Errore nella verifica");
@@ -49,8 +47,7 @@ export default function VerifyOtp() {
 
             await update({ pending2FA: false });
 
-            //router.push("/home");
-            router.replace("/home");
+            router.replace("/home"); //Forza l'aggiornamento del token
         }
 
         await update({ pending2FA: false });
@@ -59,32 +56,27 @@ export default function VerifyOtp() {
         setSuccess("Verifica completata! Ora puoi accedere.");
         setTimeout(() => router.push("/home"), 1500);
 
-    //    console.log("Richiesta autenticazione a due fattori.");
-    //    setShowOTP(true);
-    //    return;
-    //} else {
-
-    //if (response?.error == "TwoFactorAuthRequired" && formData.get('otp') == null) {
-    //    console.log("Richiesta autenticazione a due fattori.", response.error);
-    //    setShowOTP(true);
-
-
-    //      } else {
-    // Reindirizzamento alla home se l'autenticazione ha successo
-
     }
 
+    async function resendCode() {
+        const res = await fetch("/api/resend-otp", { method: "POST" });
 
+        if (res.status == 200) {
+            setMessage("Controlla la tua mail per il nuovo codice.");
+            return;
+        }
+
+    }
 
     return (
         <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-100">
             <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl">
                 <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
                     <h3 className="text-2xl font-semibold text-white">
-                        Two Factor Authentication
+                        Autenticazione a due fattori.
                     </h3>
                     <p className="text-sm text-gray-400">
-                        Enter the code you recieved in your mail
+                        Inserisci il codice ricevuto via email.
                     </p>
                 </div>
 
@@ -104,7 +96,6 @@ export default function VerifyOtp() {
                         <p className="text-red-400 text-sm">{error}</p>
                     )}
 
-
                     <button
                         type="submit"
                         className="mt-1 w-full rounded-md border border-gray-600 bg-gray-700 px-4 py-2 text-sm
@@ -113,16 +104,20 @@ export default function VerifyOtp() {
                  focus:outline-none focus:ring-2 focus:ring-blue-500
                  active:scale-[0.98]"
                     >
-                        Verify code
+                        Verifica
                     </button>
                 </form>
 
-                    <p className="text-sm text-gray-400 text-center mt-4">
-                        Don&#39;t have an account?{" "}
-                        <a href="/register" className="text-blue-400 hover:underline">
-                            Sign Up
-                        </a>
-                    </p>
+                <p className="text-sm text-gray-400 text-center mt-4">
+                    <button
+                        onClick={resendCode}
+                        className="text-blue-400 hover:underline"
+                    >
+                        Invia di nuovo codice
+                    </button>
+                </p>
+
+                {message && <p>{message}</p>}
 
             </div>
         </div>

@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
-import { createUser, getUser } from '@/app/db';
+import {NextResponse} from 'next/server';
+import {createUser, getUser} from '@/app/db';
+import {signIn} from "next-auth/react";
 
 export async function POST(request: Request) {
     try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
             { message: 'Registrazione completata', user: { email: newUser.email } },
             { status: 201 }
         );
+
     } catch (error: any) {
         console.error('Errore nella registrazione:', error);
         return NextResponse.json(

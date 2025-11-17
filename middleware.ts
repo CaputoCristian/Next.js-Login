@@ -3,29 +3,13 @@ import {NextRequest, NextResponse} from "next/server";
 import type { NextAuthRequest } from "next-auth";
 import { getToken } from "next-auth/jwt";
 
-type ReqWithAuth = NextRequest & {
-    auth?: {
-        user?: {
-            pending2FA?: boolean;
-            email?: string;
-            id?: string;
-        } | null;
-    };
-};
-
 //export default auth((req: NextAuthRequest) => {
-export async function middleware(req) {
+export async function middleware(req : NextRequest) {
     const {pathname} = req.nextUrl;
-    //const { nextUrl } = req;
-    //const pathname = nextUrl.pathname;
-    //const user = req.auth?.user ?? null;
     const token = await getToken({req, secret: process.env.AUTH_SECRET});
     const isLoggedIn = !!token;
     const isPending2FA = token?.pending2FA === true;
-    //const isLoggedIn = !!user;
-    //const isPending2FA = !!user?.pending2FA;
 
-    console.log("[MIDDLEWARE] path:", req.nextUrl.pathname, "auth present?", !!req.auth);
 
     if (pathname.startsWith("/home")) {
         if (!isLoggedIn) {
@@ -59,7 +43,6 @@ export async function middleware(req) {
     }
 
     return NextResponse.next();
-//});
 }
 
 export const config = {

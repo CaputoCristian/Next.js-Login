@@ -2,8 +2,7 @@ import {NextResponse} from "next/server";
 
 export const runtime = 'nodejs'; // forza Node runtime
 import { auth } from "@/app/auth";
-import {getToken, verifyOtp} from '@/app/db';
-import {useSession} from "next-auth/react";
+import {getToken} from '@/app/db';
 
 export async function POST(req: Request) {
 

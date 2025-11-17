@@ -13,7 +13,6 @@ export async function sendOtpEmail(to: string, otp: string) {
 
     const subject = "Il tuo codice di verifica";
 
-
     // HTML dell’email OTP
     const html = `
       <div style="font-family: Arial; padding: 20px;">

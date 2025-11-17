@@ -9,7 +9,7 @@ export default function Home() {
                 <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
                     <h3 className="text-2xl font-semibold text-white">Home Page</h3>
                     <p className="text-sm text-gray-400">
-                        This is your protected area
+                        Questa è un&#39;area protetta. Se la visualizzi allora sei autenticato.
                     </p>
                 </div>
             </div>
@@ -36,7 +36,7 @@ export default function Home() {
                     border border-red-800/60
                 "
             >   <PowerIcon className="w-6" />
-                <div className="hidden md:block">Sign Out</div>
+                <div className="hidden md:block">Esci</div>
             </button>
 
         </div>

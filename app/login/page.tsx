@@ -3,7 +3,6 @@ import { signIn } from "next-auth/react"
 import {FormEvent, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import {Eye, EyeOff} from "lucide-react";
-import {AuthError} from "next-auth";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -11,8 +10,6 @@ export default function LoginForm() {
 
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(prevState => !prevState);
-
-    const [showOTP, setShowOTP] = useState<boolean>(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -23,58 +20,34 @@ export default function LoginForm() {
         const response = await signIn('credentials', {
             email: formData.get('email') as string,
             password: formData.get('password') as string,
-            otp: formData.get('otp') as string,
-//            redirect: true,
-//            redirectTo: "/home",
             redirect: false
         });
 
 
         if (response.error) {
-            console.log("Autenticazione fallita");
+            //console.log("Autenticazione fallita");
             setError("Email o password non validi");
         }
         else {
-            console.log("Autenticazione riuscita");
+            //console.log("Autenticazione riuscita");
             router.push('/verify');
-
         }
 
     }
-        //    console.log("Richiesta autenticazione a due fattori.");
-        //    setShowOTP(true);
-        //    return;
-        //} else {
-
-    //if (response?.error == "TwoFactorAuthRequired" && formData.get('otp') == null) {
-    //    console.log("Richiesta autenticazione a due fattori.", response.error);
-    //    setShowOTP(true);
-
-
-  //      } else {
-            // Reindirizzamento alla home se l'autenticazione ha successo
-
-    //};
-
-
 
     return (
         <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-100">
             <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl">
                 <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
                     <h3 className="text-2xl font-semibold text-white">
-                        {showOTP ? "Two Factor Authentication" : "Sign In"}
+                        Accesso
                     </h3>
                     <p className="text-sm text-gray-400">
-                        {showOTP ? "Enter the code you recieved in your mail" : "Use your email and password to access your account"}
+                        Usa la tua email e password per accedere al tuo account.
                     </p>
                 </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
-            {!showOTP && (
-
-                <>
 
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -113,7 +86,7 @@ export default function LoginForm() {
                             text-gray-400 rounded-e-md focus:outline-none focus-visible:text-indigo-500 hover:text-indigo-500 transition-colors"
                                 type="button"
                                 onClick={toggleVisibility}
-                                aria-label={isVisible ? "Hide password" : "Show password"}
+                                aria-label={isVisible ? "Nascondi password" : "Mostra password"}
                                 aria-pressed={isVisible}
                                 aria-controls="password"
                             >
@@ -126,17 +99,7 @@ export default function LoginForm() {
                         </div>
                     </div>
 
-                </>
-            )}
-
-
-            {showOTP && (
-
-                <>
-
-
-
-                    <input
+                <input
                         id="otp"
                         name="otp"
                         required
@@ -146,14 +109,9 @@ export default function LoginForm() {
                         placeholder="Inserisci il codice"
                     />
 
-                </>
-                    )}
-
-
             {error && (
                 <p className="text-red-400 text-sm">{error}</p>
             )}
-
 
             <button
                 type="submit"
@@ -163,18 +121,16 @@ export default function LoginForm() {
                  focus:outline-none focus:ring-2 focus:ring-blue-500
                  active:scale-[0.98]"
             >
-                {showOTP ? "Verify code" : "Login"}
+                Login
             </button>
         </form>
 
-                {!showOTP && (
                 <p className="text-sm text-gray-400 text-center mt-4">
-                    Don&#39;t have an account?{" "}
+                    Non hai un account?{" "}
                     <a href="/register" className="text-blue-400 hover:underline">
-                        Sign Up
+                        Registrati
                     </a>
                 </p>
-                    )}
                 
             </div>
         </div>

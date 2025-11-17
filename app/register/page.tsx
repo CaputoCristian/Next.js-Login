@@ -2,6 +2,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import {signIn} from "next-auth/react";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -10,8 +11,6 @@ export default function RegisterPage() {
 
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(prevState => !prevState);
-
-    const [showOTP, setShowOTP] = useState<boolean>(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -43,18 +42,31 @@ export default function RegisterPage() {
                 setError("Errore nella creazione dell'account");
             }
             return;
+        }else{
+
+            //Login compreso nella registrazione.
+            return await signIn('credentials', {
+                email: formData.get("email"),
+                password: formData.get("password"),
+                redirect: false
+            });
+
         }
 
-        setSuccess("Registrazione completata! Ora puoi accedere.");
-        setTimeout(() => router.push("/login"), 1500);
+        //Non più necessario, al cambio di token si viene reindirizzati in automatico.
+
+        //setSuccess("Registrazione completata! Ora puoi accedere.");
+        //setTimeout(() => router.push("/verify"), 1500);
+
+
     };
     return (
         <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-100">
             <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl">
                 <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
-                    <h3 className="text-2xl font-semibold text-white">Register</h3>
+                    <h3 className="text-2xl font-semibold text-white">Nuovo account</h3>
                     <p className="text-sm text-gray-400">
-                        Create your new account using email and password
+                        Crea un nuovo account per accedere.
                     </p>
                 </div>
 
@@ -96,7 +108,7 @@ export default function RegisterPage() {
                             text-gray-400 rounded-e-md focus:outline-none focus-visible:text-indigo-500 hover:text-indigo-500 transition-colors"
                                 type="button"
                                 onClick={toggleVisibility}
-                                aria-label={isVisible ? "Hide password" : "Show password"}
+                                aria-label={isVisible ? "Nascondi password" : "Mostra password"}
                                 aria-pressed={isVisible}
                                 aria-controls="password"
                             >
@@ -162,15 +174,12 @@ export default function RegisterPage() {
                     </button>
                 </form>
 
-                {!showOTP && (
                     <p className="text-sm text-gray-400 text-center mt-4">
-                    Already have an account?{" "}
+                    Hai già un account?{" "}
                     <a href="/login" className="text-blue-400 hover:underline">
-                        Sign In
+                        Accedi
                     </a>
                 </p>
-
-                )}
 
             </div>
         </div>
