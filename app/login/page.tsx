@@ -3,6 +3,9 @@ import { signIn } from "next-auth/react"
 import {FormEvent, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import {Eye, EyeOff} from "lucide-react";
+import Image from "next/image";
+import googleLogo from "@/public/google.png";
+import githubLogo from "@/public/github.png";
 
 export default function LoginForm() {
     const router = useRouter();
@@ -35,7 +38,14 @@ export default function LoginForm() {
 
     }
 
-    return (
+    const handleSubmitGoogle = async () => {
+        const response = signIn("google");
+    }
+    const handleSubmitGitHub = async () => {
+        const response = signIn("github");
+    }
+
+        return (
         <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-100">
             <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-700 bg-gray-900 shadow-2xl">
                 <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
@@ -45,6 +55,29 @@ export default function LoginForm() {
                     <p className="text-sm text-gray-400">
                         Usa la tua email e password per accedere al tuo account.
                     </p>
+                </div>
+
+
+                <button
+                    onClick={handleSubmitGoogle}
+                    className="w-full flex items-center font-semibold justify-center h-14 px-6 mt-4 text-xl transition-colors duration-300 border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:shadow-outline hover:bg-gray-600 hover:border-gray-500"
+                >
+                    <Image src={googleLogo} alt="Google Logo" width={20} height={20} />
+                    <span className="ml-4">Continue with Google</span>
+                </button>
+
+                <button
+                    onClick={handleSubmitGitHub}
+                    className="w-full flex items-center font-semibold justify-center h-14 px-6 mt-4 mb-2 text-xl transition-colors duration-300 border-gray-600 bg-gray-700 text-gray-100 rounded-lg focus:shadow-outline hover:bg-gray-600 hover:border-gray-500"
+                >
+                    <Image src={githubLogo} alt="Github Logo" width={20} height={20} />
+                    <span className="ml-4">Continue with Github</span>
+                </button>
+
+                <div className="flex flex-col items-center justify-center space-y-3 border-gray-700 px-4 py-6 pt-8 text-center sm:px-16">
+                    <h3 className="text-2xl font-semibold text-white">
+                        Oppure
+                    </h3>
                 </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
