@@ -1,4 +1,5 @@
 import { NextAuthConfig } from 'next-auth';
+import {createUser, createUserOAuth, getUser} from "@/app/db";
 
 export const authConfig: NextAuthConfig = {
     pages: {
@@ -16,6 +17,38 @@ export const authConfig: NextAuthConfig = {
             } else if (isLoggedIn) {
                 return Response.redirect(new URL('/home', nextUrl));
             }
+            return true;
+        },
+        async signIn({ user, account }) {
+            // user.email, user.name, account.provider, account.providerAccountId
+
+            if(!user || !user.email) throw new Error(
+                "Errore con i dati utente."
+            )
+            if(!account || !account.provider || !account.providerAccountId ) throw new Error(
+                "Errore con i dati dell'account."
+            )
+
+            const existingUser = await getUser(user.email);
+
+            if (!existingUser) {
+                // Al primo accesso viene creato un nuovo utente.
+                await createUserOAuth(
+                    user.email,
+                    account.provider,
+                    account.providerAccountId,
+                );
+
+                return true;
+            }
+
+            // Se l'utente esiste, controlla che il provider sia quello esatto.
+            if (existingUser.provider !== account.provider) {
+                console.error("L'account è legato ad un altro provider");
+
+                return false;
+            }
+
             return true;
         },
         async jwt({ token, user, trigger, session }) {

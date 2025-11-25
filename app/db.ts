@@ -21,8 +21,21 @@ export async function createUser(email: string, password: string) {
 
     return prisma.user.create({
         data: {
-            email,
+            email: email,
             password: hash
+        }
+    });
+}
+
+export async function createUserOAuth(email: string, provider: string, providerAccountId: string) {
+    const salt = genSaltSync(10)
+    const hash = hashSync(providerAccountId, salt)
+
+    return prisma.user.create({
+        data: {
+            email: email,
+            provider: provider,
+            providerAccountId: hash
         }
     });
 }
@@ -49,7 +62,7 @@ export async function createToken(email: string) {
     } else {
             await prisma.token.create({
                 data: {
-                    email,
+                    email: email,
                     token: hash,
                     creation_time: date,
                 },
