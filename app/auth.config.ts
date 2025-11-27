@@ -4,7 +4,7 @@ import {createUser, createUserOAuth, getUser} from "@/app/db";
 export const authConfig: NextAuthConfig = {
     pages: {
         signIn: '/login',
-        error: '/login',
+        error: '/login/error',
     },
     providers: [],
     callbacks: {
@@ -21,6 +21,13 @@ export const authConfig: NextAuthConfig = {
         },
         async signIn({ user, account }) {
             // user.email, user.name, account.provider, account.providerAccountId
+
+            console.log("=== SIGN IN CALLBACK START ===");
+            console.log("User:", user);
+            console.log("Account:", account);
+            console.log("Email:", user.email);
+            console.log("Provider:", account.provider);
+            console.log("=== SIGN IN CALLBACK END ===");
 
             if(!user || !user.email) throw new Error(
                 "Errore con i dati utente."
@@ -43,7 +50,7 @@ export const authConfig: NextAuthConfig = {
             }
 
             // Se l'utente esiste, controlla che il provider sia quello esatto.
-            if (existingUser.provider !== account.provider) {
+            if (existingUser.provider && existingUser.provider !== account.provider) {
                 console.error("L'account è legato ad un altro provider");
 
                 return false;

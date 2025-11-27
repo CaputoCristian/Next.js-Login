@@ -26,7 +26,6 @@ export default function LoginForm() {
             redirect: false
         });
 
-
         if (response.error) {
             //console.log("Autenticazione fallita");
             setError("Email o password non validi");
@@ -38,11 +37,34 @@ export default function LoginForm() {
 
     }
 
+
+    //TODO Creare un componente per la login con Google e Github. In modo da riutilizzarlo per la register.
+
     const handleSubmitGoogle = async () => {
-        const response = signIn("google");
+        const response = await signIn("google");
+
+        if (response.error) {
+            console.log("Autenticazione fallita");
+            setError("Problema con l'autenticazione. Assicurati di usare il provider corretto.");
+        }
+        else {
+            console.log("Autenticazione riuscita");
+            router.push('/verify');
+        }
     }
     const handleSubmitGitHub = async () => {
-        const response = signIn("github");
+
+        const response = await signIn("github");
+
+        if (response.error) {
+            console.log("Autenticazione fallita");
+            setError("Problema con l'autenticazione. Assicurati di usare il provider corretto.");
+        }
+        else {
+            console.log("Autenticazione riuscita");
+            router.push('/verify');
+        }
+
     }
 
         return (
