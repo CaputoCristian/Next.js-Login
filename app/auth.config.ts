@@ -4,7 +4,7 @@ import {createUser, createUserOAuth, getUser} from "@/app/db";
 export const authConfig: NextAuthConfig = {
     pages: {
         signIn: '/login',
-        error: '/login/error',
+        error: '/error',
     },
     providers: [],
     callbacks: {
@@ -33,7 +33,7 @@ export const authConfig: NextAuthConfig = {
                 "Errore con i dati utente."
             )
             if(!account || !account.provider || !account.providerAccountId ) throw new Error(
-                "Errore con i dati dell'account."
+                "ProviderGenericError"
             )
 
             const existingUser = await getUser(user.email);
@@ -52,8 +52,8 @@ export const authConfig: NextAuthConfig = {
             // Se l'utente esiste, controlla che il provider sia quello esatto.
             if (existingUser.provider && existingUser.provider !== account.provider) {
                 console.error("L'account è legato ad un altro provider");
-
-                return false;
+                //throw new Error("ProviderMismatch"); //No poiché ritorna AccessDenied
+                return `/error?error=ProviderMismatch`;
             }
 
             return true;

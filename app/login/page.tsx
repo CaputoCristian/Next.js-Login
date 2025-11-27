@@ -43,27 +43,19 @@ export default function LoginForm() {
     const handleSubmitGoogle = async () => {
         const response = await signIn("google");
 
-        if (response.error) {
-            console.log("Autenticazione fallita");
-            setError("Problema con l'autenticazione. Assicurati di usare il provider corretto.");
-        }
-        else {
-            console.log("Autenticazione riuscita");
-            router.push('/verify');
-        }
     }
     const handleSubmitGitHub = async () => {
 
         const response = await signIn("github");
 
-        if (response.error) {
-            console.log("Autenticazione fallita");
-            setError("Problema con l'autenticazione. Assicurati di usare il provider corretto.");
-        }
-        else {
-            console.log("Autenticazione riuscita");
-            router.push('/verify');
-        }
+        //if (response.error) {
+        //    console.log("Autenticazione fallita");
+        //    setError("Problema con l'autenticazione. Assicurati di usare il provider corretto.");
+        //}
+        //else {
+        //    console.log("Autenticazione riuscita");
+        //    router.push('/verify');
+        //}
 
     }
 
