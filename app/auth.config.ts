@@ -22,12 +22,12 @@ export const authConfig: NextAuthConfig = {
         async signIn({ user, account }) {
             // user.email, user.name, account.provider, account.providerAccountId
 
-            console.log("=== SIGN IN CALLBACK START ===");
-            console.log("User:", user);
-            console.log("Account:", account);
-            console.log("Email:", user.email);
-            console.log("Provider:", account.provider);
-            console.log("=== SIGN IN CALLBACK END ===");
+            //console.log("=== SIGN IN CALLBACK START ===");
+            //console.log("User:", user);
+            //console.log("Account:", account);
+            //console.log("Email:", user.email);
+            //console.log("Provider:", account.provider);
+            //console.log("=== SIGN IN CALLBACK END ===");
 
             if(!user || !user.email) throw new Error(
                 "Errore con i dati utente."
