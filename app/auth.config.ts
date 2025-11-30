@@ -1,5 +1,5 @@
 import { NextAuthConfig } from 'next-auth';
-import {createUser, createUserOAuth, getUser} from "@/app/db";
+import {createToken, createUser, createUserOAuth, getUser} from "@/app/db";
 
 export const authConfig: NextAuthConfig = {
     pages: {
@@ -22,20 +22,21 @@ export const authConfig: NextAuthConfig = {
         async signIn({ user, account }) {
             // user.email, user.name, account.provider, account.providerAccountId
 
-            console.log("=== SIGN IN CALLBACK START ===");
-            console.log("User:", user);
-            console.log("Account:", account);
-            console.log("Email:", user.email);
-            console.log("Provider:", account.provider);
-            console.log("=== SIGN IN CALLBACK END ===");
+            //console.log("=== SIGN IN CALLBACK START ===");
+            //console.log("User:", user);
+            //console.log("Account:", account);
+            //console.log("Email:", user.email);
+            //console.log("Provider:", account.provider);
+            //console.log("=== SIGN IN CALLBACK END ===");
 
             if(!user || !user.email) throw new Error(
-                "Errore con i dati utente."
+                "GenericUserError"
             )
             if(!account || !account.provider || !account.providerAccountId ) throw new Error(
-                "ProviderGenericError"
+                "GenericProviderError"
             )
 
+            const email = user.email;
             const existingUser = await getUser(user.email);
 
             if (!existingUser) {
@@ -46,15 +47,21 @@ export const authConfig: NextAuthConfig = {
                     account.providerAccountId,
                 );
 
-                return true;
+                //return true;
             }
 
             // Se l'utente esiste, controlla che il provider sia quello esatto.
-            if (existingUser.provider && existingUser.provider !== account.provider) {
+            else if (existingUser.provider && existingUser.provider !== account.provider) {
                 console.error("L'account è legato ad un altro provider");
                 //throw new Error("ProviderMismatch"); //No poiché ritorna AccessDenied
                 return `/error?error=ProviderMismatch`;
             }
+
+            //Two-Factor-Authentication
+            const otp = await createToken(email as string);
+            await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
+
+            console.log("Creazione otp e invio mail per:", email, otp);
 
             return true;
         },

@@ -49,8 +49,6 @@ export const authOptions: NextAuthConfig = {
 
                 //Two-Factor-Authentication
                 const otp = await createToken(email as string);
-
-
                 await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
 
                 console.log("Creazione otp e invio mail per:", email, otp);
