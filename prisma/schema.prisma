@@ -16,9 +16,11 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique @db.VarChar(64)
-  password String @db.VarChar(64)
+  id                Int     @id @default(autoincrement())
+  email             String  @unique @db.VarChar(64)
+  password          String? @db.VarChar(64)
+  provider          String?
+  providerAccountId String?
 
   @@schema("user_database")
 }
@@ -26,7 +28,7 @@ model User {
 model Token {
   id            Int      @id @default(autoincrement())
   email         String   @unique @db.VarChar(64)
-  token         String   @db.VarChar(64)
+  token         String
   creation_time DateTime
 
   @@schema("user_database")

@@ -1,4 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 import {compare, genSaltSync, hashSync} from 'bcrypt-ts';
 import {createToken, getToken, getUser} from './db';
 import { authConfig } from './auth.config';
@@ -47,8 +49,6 @@ export const authOptions: NextAuthConfig = {
 
                 //Two-Factor-Authentication
                 const otp = await createToken(email as string);
-
-
                 await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
 
                 console.log("Creazione otp e invio mail per:", email, otp);
@@ -63,6 +63,14 @@ export const authOptions: NextAuthConfig = {
 
             },
         }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET
+        }),
+        GitHubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET
+        })
     ],
     secret: process.env.AUTH_SECRET,
 }
