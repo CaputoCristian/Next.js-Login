@@ -1,5 +1,6 @@
 import { NextAuthConfig } from 'next-auth';
-import {createToken, createUser, createUserOAuth, getUser} from "@/app/db";
+import {createToken, getToken, createUserOAuth, getUser} from "@/app/db";
+import {compare} from "bcrypt-ts";
 
 export const authConfig: NextAuthConfig = {
     pages: {
@@ -71,25 +72,42 @@ export const authConfig: NextAuthConfig = {
             //console.log("JWT CALLBACK → trigger:", trigger);
             //console.log("JWT CALLBACK → session:", session);
 
-            if (user) {
-                token.id = user.id;
-                token.email = user.email;
-                //Se non definito, inizializza true
-                token.pending2FA = user.pending2FA ?? true;
-            }
+            //l'email è sicuramente stata definita nel login, ma occorre controllarla per sopprimere un errore
+            if (trigger === "update" && session?.otp && token?.email) {
+                const record = await getToken(token.email);
 
-            if (trigger === "update" && session?.pending2FA !== undefined) {
-                token.pending2FA = session.pending2FA;
+                if (!record) {
+                    console.error("Nessun OTP trovato per l'utente");
+                    return token; //Restituisce il token invariato
+                }
+
+                const tokenMatch = await compare(session.otp, record.token);
+
+                const ageMs = Date.now() - record.creation_time.getTime();
+                const maxAge = 5 * 60 * 1000;
+
+                if (tokenMatch && ageMs <= maxAge) {
+                    token.pending2FA = false; //Verifica riuscita
+                    //TODO eliminazione token dal DB
+                } else {
+                    console.warn("Tentativo verifica OTP fallito o scaduto");
+
+                }
+
+                //Non fare nulla se l'aggiornamento non è necessario.
+                if (trigger === "update" && session?.pending2FA === false) {
+                }
             }
 
             return token;
         },
 
-        async session({ session, token }) {
-            session.user.id = token.id;
-            session.user.email = token.email;
-            session.user.pending2FA = token.pending2FA;
 
+        async session({ session, token }) {
+
+            if (token.pending2FA) {
+                session.user.pending2FA = token.pending2FA;
+            }
             //console.log("JWT CALLBACK IN SESSION→ token:", token);
             //console.log("JWT CALLBACK IN SESSION→ session:", session);
 

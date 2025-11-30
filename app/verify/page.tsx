@@ -19,47 +19,21 @@ export default function VerifyOtp() {
         setError("");
         setSuccess("");
         const formData = new FormData(e.currentTarget);
+        const formOtp = formData.get("otp");
 
-        console.log("Invio controllo OTP", formData.get('otp'));
+        console.log("Invio controllo OTP", formOtp);
 
-        const res = await fetch("/api/verify-otp", {
-            method: "POST",
-            body: JSON.stringify({
-                otp: formData.get("otp"),
-            }),
-            headers: { "Content-Type": "application/json" },
-        });
+        //Si trigger l'update del token, nel mentre viene verificato l'OTP.'
+        const newSession = await update({ otp: formOtp });
 
-        if (!res.ok) {
-            if (res.status === 401) {
-                setError("L'utente non possiede un OTP");
-            }
-            else if (res.status === 409) {
-                setError("OTP non valido. Riprova.")
-            }
-            else if (res.status === 408) {
-                setError("OTP scaduto. Riprova.")
-            }
-            else {
-                setError("Errore nella verifica");
-            }
-            return;
+        //Si controlla se la sessione è stata aggiornata
+        if (newSession?.user?.pending2FA === false) {
+            setSuccess("Verifica completata.");
+            router.replace("/home"); //Oppure .push?
+        } else {
+            //Non usando l'API non si può definire l'errore specifico.
+            setError("Codice non valido o scaduto. Riprova.");
         }
-
-        if (res.ok) {
-            console.log("Verifica completata1");
-
-            await update({ pending2FA: false });
-
-            router.replace("/home"); //Forza l'aggiornamento del token
-        }
-
-        await update({ pending2FA: false });
-
-        console.log("Verifica completata");
-        setSuccess("Verifica completata! Ora puoi accedere.");
-        setTimeout(() => router.push("/home"), 1500);
-
     }
 
     async function resendCode() {
