@@ -19,10 +19,13 @@ export default function LoginForm() {
         setError(''); // Resetta eventuali errori precedenti
 
         const formData = new FormData(e.currentTarget);
+        const rememberValue = formData.get("remember");
+        const remindMeStatus = rememberValue ? "true" : "false";
 
         const response = await signIn('credentials', {
             email: formData.get('email') as string,
             password: formData.get('password') as string,
+            remindMe: remindMeStatus,
             redirect: false
         });
 
@@ -39,7 +42,6 @@ export default function LoginForm() {
 
 
     //TODO Creare un componente per la login con Google e Github. In modo da riutilizzarlo per la register.
-
     const handleSubmitGoogle = async () => {
         await signIn("google");
     }
@@ -133,6 +135,18 @@ export default function LoginForm() {
                             </button>
                         </div>
                     </div>
+
+            <div className="flex items-center gap-2 mt-4">
+                <input
+                    id="remember"
+                    name="remember"
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300 bg-gray-700 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="remember" className="text-sm text-gray-300">
+                    Resta collegato
+                </label>
+            </div>
 
             {error && (
                 <p className="text-red-400 text-sm">{error}</p>

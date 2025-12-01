@@ -17,11 +17,13 @@ export const authOptions: NextAuthConfig = {
             credentials: {
                 email: { label: "Email", type: "text" },
                 password: { label: "Password", type: "password" },
+                remindMe: { type: "text"},
             },
             async authorize(credentials) {
 
                 const email = credentials?.email;
                 const password = credentials?.password;
+                const remindMe = credentials?.remindMe;
 
                 //console.log(" Tentativo di login per:", email);
 
@@ -48,19 +50,19 @@ export const authOptions: NextAuthConfig = {
                 }
 
                 //Two-Factor-Authentication
-                const otp = await createToken(email as string);
-                await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
+                //Logica spostata nella callback di signIn()
+                //const otp = await createToken(email as string);
+                //await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
 
-                console.log("Creazione otp e invio mail per:", email, otp);
+                //console.log("Creazione otp e invio mail per:", email, otp);
                 //console.log("Login riuscito per:", email);
 
                 return {
                         id: user.id.toString(),
                         email: user.email,
                         pending2FA: true,
-                    };
-
-
+                        remindMe: remindMe === 'true'
+                };
             },
         }),
         GoogleProvider({

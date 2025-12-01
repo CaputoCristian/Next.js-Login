@@ -1,6 +1,7 @@
 import { NextAuthConfig } from 'next-auth';
 import {createToken, getToken, createUserOAuth, getUser} from "@/app/db";
 import {compare} from "bcrypt-ts";
+import {now} from "effect/DateTime";
 
 export const authConfig: NextAuthConfig = {
     pages: {
@@ -72,9 +73,23 @@ export const authConfig: NextAuthConfig = {
             //console.log("JWT CALLBACK → trigger:", trigger);
             //console.log("JWT CALLBACK → session:", session);
 
+            //Primo login
+            if (user) {
+                token.remindMe = user.remindMe!;
+                token.pending2FA = user.pending2FA!;
+                token.loginTimestamp = Date.now(); //Salva l'istante del primo login
+
+                console.log("[JWT - PRIMO ACCESSO] Token creato:");
+                console.log(token);
+
+            }
+
+
             //l'email è sicuramente stata definita nel login, ma occorre controllarla per sopprimere un errore
             if (trigger === "update" && session?.otp && token?.email) {
                 const record = await getToken(token.email);
+
+                console.log("[JWT - UPDATE TRIGGER] Sessione ricevuta:", session);
 
                 if (!record) {
                     console.error("Nessun OTP trovato per l'utente");
@@ -97,6 +112,32 @@ export const authConfig: NextAuthConfig = {
                 //Non fare nulla se l'aggiornamento non è necessario.
                 if (trigger === "update" && session?.pending2FA === false) {
                 }
+
+                console.log("[JWT - UPDATE TRIGGER] Token dopo modifica:", token);
+
+            }
+
+            //DEBUG
+            if (!user && trigger !== "update") {
+                console.log("[JWT - REFRESH] Token in uso:", token);
+            }
+
+            const date = Date.now();
+
+            if (token.pending2FA) {
+                const timePending = date - (token.loginTimestamp as number);
+                if (timePending > 15 * 60 * 1000) {
+                    console.log("[JWT - SCADENZA 2FA] Token in uso:", token);
+                    return null; //Invalida il token, slogga l'utente dopo 15 minuti, se non ha verificato
+                }
+            }
+
+            else if (!token.remindMe) {
+                const timeLogged = date - (token.loginTimestamp as number);
+                if (timeLogged > 3 * 60 * 60 * 1000) { //Se non si ha messo la preferenza per restare collegati, si slogga dopo 3 ore.
+                    console.log("[JWT - SCADENZA NORMALE] Token in uso:", token);
+                    return null; //Slogga l'utente
+                }
             }
 
             return token;
@@ -105,8 +146,11 @@ export const authConfig: NextAuthConfig = {
 
         async session({ session, token }) {
 
-            if (token.pending2FA) {
+            if (token.pending2FA !== undefined) {
                 session.user.pending2FA = token.pending2FA;
+            }
+            if (token.remindMe !== undefined) {
+                session.user.remindMe = token.remindMe;
             }
             //console.log("JWT CALLBACK IN SESSION→ token:", token);
             //console.log("JWT CALLBACK IN SESSION→ session:", session);
@@ -115,7 +159,7 @@ export const authConfig: NextAuthConfig = {
         },
     },
     session: {
-        strategy: "jwt",
+        strategy: "jwt", //La durata base del token è di 30 giorni.
     },
     secret: process.env.AUTH_SECRET,
 } // satisfies NextAuthConfig;

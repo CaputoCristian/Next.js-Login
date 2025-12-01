@@ -26,10 +26,15 @@ export default function VerifyOtp() {
         //Si trigger l'update del token, nel mentre viene verificato l'OTP.'
         const newSession = await update({ otp: formOtp });
 
+
+        console.log("Aggiornamento sessione", newSession);
+        console.log("Aggiornamento user", newSession?.user?.pending2FA);
+
+
         //Si controlla se la sessione è stata aggiornata
         if (newSession?.user?.pending2FA === false) {
             setSuccess("Verifica completata.");
-            router.replace("/home"); //Oppure .push?
+            router.push("/home"); //Oppure .replace?
         } else {
             //Non usando l'API non si può definire l'errore specifico.
             setError("Codice non valido o scaduto. Riprova.");
