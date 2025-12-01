@@ -1,7 +1,33 @@
-import {signOut} from "@/app/auth";
+'use client'
+//import {signOut} from "@/app/auth";
+import { signOut } from "next-auth/react";
 import {PowerIcon} from "lucide-react";
+import {useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {useSession} from "next-auth/react";
 
 export default function Home() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            console.log("Sessione scaduta o invalidata. Reindirizzamento al login.");
+
+            router.push('/error?error=SessionExpired');
+
+            // router.replace('/401');
+        }
+    }, [status, router]); // Il trigger avviene solo al cambiamento di stato
+
+    if (status === 'unauthenticated') {
+        return null; //Evita bug grafici prima del redirect
+    }
+
+    async function handleLogOut() {
+        await signOut({ redirectTo: "/login" });
+    }
+
     return (
 
         <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-100">
@@ -15,10 +41,7 @@ export default function Home() {
             </div>
 
             <button
-                onClick={async () => {
-                    'use server';
-                    await signOut({ redirectTo: '/' });
-                }}
+                onClick={handleLogOut}
                 className="
                     absolute
                     flex h-[48px] grow

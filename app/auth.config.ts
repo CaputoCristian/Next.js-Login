@@ -56,7 +56,7 @@ export const authConfig: NextAuthConfig = {
             else if (existingUser.provider && existingUser.provider !== account.provider) {
                 console.error("L'account è legato ad un altro provider");
                 //throw new Error("ProviderMismatch"); //No poiché ritorna AccessDenied
-                return `/error?error=ProviderMismatch`;
+                return '/error?error=ProviderMismatch';
             }
 
             //Two-Factor-Authentication
@@ -127,14 +127,15 @@ export const authConfig: NextAuthConfig = {
             if (token.pending2FA) {
                 const timePending = date - (token.loginTimestamp as number);
                 if (timePending > 15 * 60 * 1000) {
-                    console.log("[JWT - SCADENZA 2FA] Token in uso:", token);
+                        console.log("[JWT - SCADENZA 2FA] Token in uso:", token);
                     return null; //Invalida il token, slogga l'utente dopo 15 minuti, se non ha verificato
                 }
             }
 
             else if (!token.remindMe) {
                 const timeLogged = date - (token.loginTimestamp as number);
-                if (timeLogged > 3 * 60 * 60 * 1000) { //Se non si ha messo la preferenza per restare collegati, si slogga dopo 3 ore.
+//                if (timeLogged > 3 * 60 * 60 * 1000) { //Se non si ha messo la preferenza per restare collegati, si slogga dopo 3 ore.
+                if (timeLogged > 60 * 1000) { //Se non si ha messo la preferenza per restare collegati, si slogga dopo 3 ore.
                     console.log("[JWT - SCADENZA NORMALE] Token in uso:", token);
                     return null; //Slogga l'utente
                 }

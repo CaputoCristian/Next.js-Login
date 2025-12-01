@@ -28,7 +28,7 @@ export const authOptions: NextAuthConfig = {
                 //console.log(" Tentativo di login per:", email);
 
                 if (!email || !password) {
-                    console.error("Mancano email o password");
+                    console.error("Credenziali incomplete");
                     throw new Error("Email e password sono obbligatori");
                 }
 
