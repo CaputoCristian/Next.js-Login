@@ -25,8 +25,6 @@ export const authOptions: NextAuthConfig = {
                 const password = credentials?.password;
                 const remindMe = credentials?.remindMe;
 
-                //console.log(" Tentativo di login per:", email);
-
                 if (!email || !password) {
                     console.error("Credenziali incomplete");
                     throw new Error("Email e password sono obbligatori");
@@ -36,16 +34,12 @@ export const authOptions: NextAuthConfig = {
                 if (!user) {
                     console.error("Utente non trovato nel database");
                     return null;
-                }
-
-                //console.log("Utente trovato:", user.email);
+                } else if (user.provider != "credentials")
+                    throw new Error("Account registrato tramite un altro provider"); //TODO gestione errore.
 
                 const passwordsMatch = await compare(password as string, user.password!);
 
-                //console.log("Password corretta?", passwordsMatch);
-
                 if (!passwordsMatch) {
-                    //console.error("Password errata per:", email);
                     throw new Error("IncorrectCredentials");
                 }
 
@@ -54,9 +48,7 @@ export const authOptions: NextAuthConfig = {
                 //const otp = await createToken(email as string);
                 //await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
 
-                //console.log("Creazione otp e invio mail per:", email, otp);
-                //console.log("Login riuscito per:", email);
-
+                //Ritorna il token di auth, criptato tramite AUTH_SECRET
                 return {
                         id: user.id.toString(),
                         email: user.email,

@@ -10,6 +10,7 @@ export default function Home() {
     const { data: session, status } = useSession();
     const router = useRouter();
 
+    //Causa il reindirizzamento alla pagina di errore se la sessione scade.
     useEffect(() => {
         if (status === 'unauthenticated') {
             console.log("Sessione scaduta o invalidata. Reindirizzamento al login.");

@@ -1,6 +1,6 @@
 'use client';
 import {useSession} from "next-auth/react"
-import {FormEvent, useState} from 'react';
+import {FormEvent, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from "next-auth/react";
 
@@ -11,8 +11,22 @@ export default function VerifyOtp() {
 
     const [message, setMessage] = useState("");
 
-    const { update } = useSession();
+    const { update, status } = useSession();
 
+    //Causa il reindirizzamento alla pagina di errore se la sessione scade.
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            console.log("Sessione scaduta o invalidata. Reindirizzamento al login.");
+
+            router.push('/error?error=SessionExpired');
+
+            // router.replace('/401');
+        }
+    }, [status, router]); // Il trigger avviene solo al cambiamento di stato
+
+    if (status === 'unauthenticated') {
+        return null; //Evita bug grafici prima del redirect
+    }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -23,9 +37,9 @@ export default function VerifyOtp() {
 
         console.log("Invio controllo OTP", formOtp);
 
-        //Si trigger l'update del token, nel mentre viene verificato l'OTP.'
+        //Si triggera l'update del token, nel mentre viene verificato l'OTP.'
+        //Da notare che non viene inviata nessuna mail, quest'ultima viene prelevata dal token.
         const newSession = await update({ otp: formOtp });
-
 
         console.log("Aggiornamento sessione", newSession);
         console.log("Aggiornamento user", newSession?.user?.pending2FA);
@@ -36,11 +50,12 @@ export default function VerifyOtp() {
             setSuccess("Verifica completata.");
             router.push("/home"); //Oppure .replace?
         } else {
-            //Non usando l'API non si può definire l'errore specifico.
+            //Purtroppo non usando l'API non si può definire l'errore specifico.
             setError("Codice non valido o scaduto. Riprova.");
         }
     }
 
+    //L'API invalida il codice corrente e ne invia uno nuovo.
     async function resendCode() {
         const res = await fetch("/api/resend-otp", { method: "POST" });
 

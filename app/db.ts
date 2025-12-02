@@ -19,23 +19,91 @@ export async function createUser(email: string, password: string) {
     const salt = genSaltSync(10)
     const hash = hashSync(password, salt)
 
-    return prisma.user.create({
-        data: {
-            email: email,
-            password: hash
-        }
+
+    const existing_user = await prisma.user.findUnique({
+        where: { email },
     });
+
+    //Se non esiste un utente con quella email, crea uno nuovo.
+    if (!existing_user) {
+        return prisma.user.create({
+            data: {
+                email: email,
+                provider: "credentials",
+                password: hash,
+                providerAccountId: null,
+                verified: false
+            }
+        });
+    }
+
+    //Se esiste un utente con quella mail, ma non l'ha mai confermata, lo sovrascrive.
+    if (existing_user && !existing_user.verified) {
+        return prisma.user.update({
+            where: { email },
+            data: {
+                email: email,
+                provider: "credentials",
+                password: hash,
+                providerAccountId: null,
+                verified: false,
+            },
+        });
+    }
+
+    //Esiste un utente, ed è verificato.
+    return null;
 }
 
 export async function createUserOAuth(email: string, provider: string, providerAccountId: string) {
     const salt = genSaltSync(10)
     const hash = hashSync(providerAccountId, salt)
 
-    return prisma.user.create({
+    const existing_user = await prisma.user.findUnique({
+        where: { email },
+    });
+
+    if (!existing_user) {
+        return prisma.user.create({
+            data: {
+                email: email,
+                provider: provider,
+                providerAccountId: hash,
+                verified: false
+            }
+        });
+    }
+
+    if (existing_user && !existing_user.verified) {
+        await prisma.user.update({
+            where: { email },
+            data: {
+                email: email,
+                provider: provider,
+                password: null,
+                providerAccountId: hash,
+                verified: false,
+            },
+        });
+    }
+    return null;
+}
+
+//Se esiste un account che non è mai stato verificato, lo elimina (non sovrascrive email e password per evitare problemi con i provider) e ne crea uno nuovo.
+//Se l'account non è mai stato verificato -> Non si è mai autenticato -> Non vengono persi dati.
+export async function updateUser(email: string, password: string) {
+    await prisma.user.delete({
+        where: { email },
+    });
+    return await createUser(email, password)
+}
+
+
+export async function verifyUser(email: string) {
+    return prisma.user.update({
+        where: { email },
         data: {
-            email: email,
-            provider: provider,
-            providerAccountId: hash
+            verified: true
         }
     });
 }

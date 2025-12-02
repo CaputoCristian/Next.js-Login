@@ -1,5 +1,5 @@
 import { NextAuthConfig } from 'next-auth';
-import {createToken, getToken, createUserOAuth, getUser} from "@/app/db";
+import {createToken, getToken, createUserOAuth, getUser, verifyUser} from "@/app/db";
 import {compare} from "bcrypt-ts";
 import {now} from "effect/DateTime";
 
@@ -21,15 +21,8 @@ export const authConfig: NextAuthConfig = {
             }
             return true;
         },
+        //Callback che avviene dopo aver eseguito l'accesso e controlla la mutua esclusività dei provider.
         async signIn({ user, account }) {
-            // user.email, user.name, account.provider, account.providerAccountId
-
-            //console.log("=== SIGN IN CALLBACK START ===");
-            //console.log("User:", user);
-            //console.log("Account:", account);
-            //console.log("Email:", user.email);
-            //console.log("Provider:", account.provider);
-            //console.log("=== SIGN IN CALLBACK END ===");
 
             if(!user || !user.email) throw new Error(
                 "GenericUserError"
@@ -41,8 +34,8 @@ export const authConfig: NextAuthConfig = {
             const email = user.email;
             const existingUser = await getUser(user.email);
 
-            if (!existingUser) {
-                // Al primo accesso viene creato un nuovo utente.
+            if (!existingUser || !existingUser.verified) {
+                // Al primo accesso viene creato un nuovo utente. Se esiste, ma non verificato lo sovrascrive
                 await createUserOAuth(
                     user.email,
                     account.provider,
@@ -52,14 +45,14 @@ export const authConfig: NextAuthConfig = {
                 //return true;
             }
 
-            // Se l'utente esiste, controlla che il provider sia quello esatto.
+            //Se l'utente esiste, controlla che il provider corrente sia quello esatto.
             else if (existingUser.provider && existingUser.provider !== account.provider) {
                 console.error("L'account è legato ad un altro provider");
                 //throw new Error("ProviderMismatch"); //No poiché ritorna AccessDenied
                 return '/error?error=ProviderMismatch';
             }
 
-            //Two-Factor-Authentication
+            //Two-Factor-Authentication, se non ci sono problemi crea il token e lo invia.
             const otp = await createToken(email as string);
             await fetch("http://localhost:3000/api/send-otp", { method: 'POST', body: JSON.stringify({email, otp}) })
 
@@ -69,14 +62,12 @@ export const authConfig: NextAuthConfig = {
         },
         async jwt({ token, user, trigger, session }) {
 
-            //console.log("JWT CALLBACK → token:", token);
-            //console.log("JWT CALLBACK → trigger:", trigger);
-            //console.log("JWT CALLBACK → session:", session);
+            console.log("User:", user);
 
-            //Primo login
+            //Login
             if (user) {
                 token.remindMe = user.remindMe!;
-                token.pending2FA = user.pending2FA!;
+                token.pending2FA = true;
                 token.loginTimestamp = Date.now(); //Salva l'istante del primo login
 
                 console.log("[JWT - PRIMO ACCESSO] Token creato:");
@@ -84,8 +75,7 @@ export const authConfig: NextAuthConfig = {
 
             }
 
-
-            //l'email è sicuramente stata definita nel login, ma occorre controllarla per sopprimere un errore
+            //Effettua la verifica dell'OTP
             if (trigger === "update" && session?.otp && token?.email) {
                 const record = await getToken(token.email);
 
@@ -99,18 +89,15 @@ export const authConfig: NextAuthConfig = {
                 const tokenMatch = await compare(session.otp, record.token);
 
                 const ageMs = Date.now() - record.creation_time.getTime();
-                const maxAge = 5 * 60 * 1000;
+                const maxAge = 5 * 60 * 1000; // 5 minuti
 
                 if (tokenMatch && ageMs <= maxAge) {
+                    await verifyUser(token.email);
                     token.pending2FA = false; //Verifica riuscita
                     //TODO eliminazione token dal DB
                 } else {
-                    console.warn("Tentativo verifica OTP fallito o scaduto");
+                    console.error("Tentativo verifica OTP fallito o scaduto");
 
-                }
-
-                //Non fare nulla se l'aggiornamento non è necessario.
-                if (trigger === "update" && session?.pending2FA === false) {
                 }
 
                 console.log("[JWT - UPDATE TRIGGER] Token dopo modifica:", token);
@@ -124,18 +111,19 @@ export const authConfig: NextAuthConfig = {
 
             const date = Date.now();
 
+            //Invalida il token, slogga l'utente dopo 15 minuti, se non ha verificato la sessione
             if (token.pending2FA) {
                 const timePending = date - (token.loginTimestamp as number);
                 if (timePending > 15 * 60 * 1000) {
                         console.log("[JWT - SCADENZA 2FA] Token in uso:", token);
-                    return null; //Invalida il token, slogga l'utente dopo 15 minuti, se non ha verificato
+                    return null;
                 }
             }
 
+            //Se non si ha inserito la preferenza per restare collegati, la sessione si invalida dopo 3 ore.
             else if (!token.remindMe) {
                 const timeLogged = date - (token.loginTimestamp as number);
-//                if (timeLogged > 3 * 60 * 60 * 1000) { //Se non si ha messo la preferenza per restare collegati, si slogga dopo 3 ore.
-                if (timeLogged > 60 * 1000) { //Se non si ha messo la preferenza per restare collegati, si slogga dopo 3 ore.
+                if (timeLogged > 3 * 60 * 60 * 1000) {
                     console.log("[JWT - SCADENZA NORMALE] Token in uso:", token);
                     return null; //Slogga l'utente
                 }
@@ -147,7 +135,11 @@ export const authConfig: NextAuthConfig = {
 
         async session({ session, token }) {
 
-            if (token.pending2FA !== undefined) {
+            if (token.pending2FA == undefined) {
+                token.pending2FA = true;
+                session.user.pending2FA = token.pending2FA;
+            }
+            else if (token.pending2FA !== undefined) {
                 session.user.pending2FA = token.pending2FA;
             }
             if (token.remindMe !== undefined) {

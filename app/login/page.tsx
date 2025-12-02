@@ -1,6 +1,6 @@
 'use client';
-import { signIn } from "next-auth/react"
-import {FormEvent, useState} from 'react';
+import {signIn, useSession} from "next-auth/react"
+import {FormEvent, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import {Eye, EyeOff} from "lucide-react";
 import Image from "next/image";
@@ -14,6 +14,21 @@ export default function LoginForm() {
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(prevState => !prevState);
 
+    const { status } = useSession();
+
+    //Causa il reindirizzamento alla pagina di verifica dopo il login
+    useEffect(() => {
+        if (status === 'authenticated') {
+            console.log("Reindirizzamento alla verifica.");
+
+            router.push('/verify');
+
+            // router.replace('/401');
+        }
+    }, [status, router]); // Il trigger avviene solo al cambiamento di stato
+
+
+    //Prova ad effettuare il login
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(''); // Resetta eventuali errori precedenti
@@ -41,12 +56,14 @@ export default function LoginForm() {
     }
 
 
-    //TODO Creare un componente per la login con Google e Github. In modo da riutilizzarlo per la register.
+    //TODO Creare un component per la login con Google e Github. In modo da riutilizzarlo per la register.
     const handleSubmitGoogle = async () => {
         await signIn("google");
+        //router.push('/verify');
     }
     const handleSubmitGitHub = async () => {
         await signIn("github");
+        //router.push('/verify');
     }
 
         return (
