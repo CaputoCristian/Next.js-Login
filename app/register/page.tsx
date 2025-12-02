@@ -1,8 +1,8 @@
 "use client";
-import { useState, FormEvent } from "react";
+import {useState, FormEvent, useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
-import {signIn} from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -11,6 +11,20 @@ export default function RegisterPage() {
 
     const [isVisible, setIsVisible] = useState(false);
     const toggleVisibility = () => setIsVisible(prevState => !prevState);
+
+    const { status } = useSession();
+
+    useEffect(() => {
+        if (status === 'authenticated') {
+            console.log("Reindirizzamento alla verifica.");
+
+            router.push('/verify');
+
+            // router.replace('/401');
+        }
+    }, [status, router]); // Il trigger avviene solo al cambiamento di stato
+
+
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -53,8 +67,8 @@ export default function RegisterPage() {
 
         }
 
-        setSuccess("Registrazione completata! Ora puoi accedere.");
-        setTimeout(() => router.push("/verify"), 1500);
+        //setSuccess("Registrazione completata! Ora puoi accedere.");
+        //setTimeout(() => router.push("/verify"), 1500);
 
 
     };

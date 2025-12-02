@@ -975,6 +975,7 @@ export namespace Prisma {
   export type UserMinAggregateOutputType = {
     id: number | null
     email: string | null
+    verified: boolean | null
     password: string | null
     provider: string | null
     providerAccountId: string | null
@@ -983,6 +984,7 @@ export namespace Prisma {
   export type UserMaxAggregateOutputType = {
     id: number | null
     email: string | null
+    verified: boolean | null
     password: string | null
     provider: string | null
     providerAccountId: string | null
@@ -991,6 +993,7 @@ export namespace Prisma {
   export type UserCountAggregateOutputType = {
     id: number
     email: number
+    verified: number
     password: number
     provider: number
     providerAccountId: number
@@ -1009,6 +1012,7 @@ export namespace Prisma {
   export type UserMinAggregateInputType = {
     id?: true
     email?: true
+    verified?: true
     password?: true
     provider?: true
     providerAccountId?: true
@@ -1017,6 +1021,7 @@ export namespace Prisma {
   export type UserMaxAggregateInputType = {
     id?: true
     email?: true
+    verified?: true
     password?: true
     provider?: true
     providerAccountId?: true
@@ -1025,6 +1030,7 @@ export namespace Prisma {
   export type UserCountAggregateInputType = {
     id?: true
     email?: true
+    verified?: true
     password?: true
     provider?: true
     providerAccountId?: true
@@ -1120,6 +1126,7 @@ export namespace Prisma {
   export type UserGroupByOutputType = {
     id: number
     email: string
+    verified: boolean
     password: string | null
     provider: string | null
     providerAccountId: string | null
@@ -1147,6 +1154,7 @@ export namespace Prisma {
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    verified?: boolean
     password?: boolean
     provider?: boolean
     providerAccountId?: boolean
@@ -1155,6 +1163,7 @@ export namespace Prisma {
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    verified?: boolean
     password?: boolean
     provider?: boolean
     providerAccountId?: boolean
@@ -1163,6 +1172,7 @@ export namespace Prisma {
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    verified?: boolean
     password?: boolean
     provider?: boolean
     providerAccountId?: boolean
@@ -1171,12 +1181,13 @@ export namespace Prisma {
   export type UserSelectScalar = {
     id?: boolean
     email?: boolean
+    verified?: boolean
     password?: boolean
     provider?: boolean
     providerAccountId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "provider" | "providerAccountId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "verified" | "password" | "provider" | "providerAccountId", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -1184,6 +1195,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       email: string
+      verified: boolean
       password: string | null
       provider: string | null
       providerAccountId: string | null
@@ -1612,6 +1624,7 @@ export namespace Prisma {
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'Int'>
     readonly email: FieldRef<"User", 'String'>
+    readonly verified: FieldRef<"User", 'Boolean'>
     readonly password: FieldRef<"User", 'String'>
     readonly provider: FieldRef<"User", 'String'>
     readonly providerAccountId: FieldRef<"User", 'String'>
@@ -3014,6 +3027,7 @@ export namespace Prisma {
   export const UserScalarFieldEnum: {
     id: 'id',
     email: 'email',
+    verified: 'verified',
     password: 'password',
     provider: 'provider',
     providerAccountId: 'providerAccountId'
@@ -3090,6 +3104,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -3126,6 +3147,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     id?: IntFilter<"User"> | number
     email?: StringFilter<"User"> | string
+    verified?: BoolFilter<"User"> | boolean
     password?: StringNullableFilter<"User"> | string | null
     provider?: StringNullableFilter<"User"> | string | null
     providerAccountId?: StringNullableFilter<"User"> | string | null
@@ -3134,6 +3156,7 @@ export namespace Prisma {
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
+    verified?: SortOrder
     password?: SortOrderInput | SortOrder
     provider?: SortOrderInput | SortOrder
     providerAccountId?: SortOrderInput | SortOrder
@@ -3145,6 +3168,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
+    verified?: BoolFilter<"User"> | boolean
     password?: StringNullableFilter<"User"> | string | null
     provider?: StringNullableFilter<"User"> | string | null
     providerAccountId?: StringNullableFilter<"User"> | string | null
@@ -3153,6 +3177,7 @@ export namespace Prisma {
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
+    verified?: SortOrder
     password?: SortOrderInput | SortOrder
     provider?: SortOrderInput | SortOrder
     providerAccountId?: SortOrderInput | SortOrder
@@ -3169,6 +3194,7 @@ export namespace Prisma {
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"User"> | number
     email?: StringWithAggregatesFilter<"User"> | string
+    verified?: BoolWithAggregatesFilter<"User"> | boolean
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
     provider?: StringNullableWithAggregatesFilter<"User"> | string | null
     providerAccountId?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -3225,6 +3251,7 @@ export namespace Prisma {
 
   export type UserCreateInput = {
     email: string
+    verified?: boolean
     password?: string | null
     provider?: string | null
     providerAccountId?: string | null
@@ -3233,6 +3260,7 @@ export namespace Prisma {
   export type UserUncheckedCreateInput = {
     id?: number
     email: string
+    verified?: boolean
     password?: string | null
     provider?: string | null
     providerAccountId?: string | null
@@ -3240,6 +3268,7 @@ export namespace Prisma {
 
   export type UserUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
     password?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3248,6 +3277,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
     password?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3256,6 +3286,7 @@ export namespace Prisma {
   export type UserCreateManyInput = {
     id?: number
     email: string
+    verified?: boolean
     password?: string | null
     provider?: string | null
     providerAccountId?: string | null
@@ -3263,6 +3294,7 @@ export namespace Prisma {
 
   export type UserUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
     password?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3271,6 +3303,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    verified?: BoolFieldUpdateOperationsInput | boolean
     password?: NullableStringFieldUpdateOperationsInput | string | null
     provider?: NullableStringFieldUpdateOperationsInput | string | null
     providerAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3348,6 +3381,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -3371,6 +3409,7 @@ export namespace Prisma {
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    verified?: SortOrder
     password?: SortOrder
     provider?: SortOrder
     providerAccountId?: SortOrder
@@ -3383,6 +3422,7 @@ export namespace Prisma {
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    verified?: SortOrder
     password?: SortOrder
     provider?: SortOrder
     providerAccountId?: SortOrder
@@ -3391,6 +3431,7 @@ export namespace Prisma {
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    verified?: SortOrder
     password?: SortOrder
     provider?: SortOrder
     providerAccountId?: SortOrder
@@ -3432,6 +3473,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -3510,6 +3559,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
@@ -3549,6 +3602,11 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
@@ -3607,6 +3665,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {

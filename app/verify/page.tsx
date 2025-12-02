@@ -1,6 +1,6 @@
 'use client';
 import {useSession} from "next-auth/react"
-import {FormEvent, useState} from 'react';
+import {FormEvent, useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from "next-auth/react";
 
@@ -11,8 +11,21 @@ export default function VerifyOtp() {
 
     const [message, setMessage] = useState("");
 
-    const { update } = useSession();
+    const { update, status } = useSession();
 
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            console.log("Sessione scaduta o invalidata. Reindirizzamento al login.");
+
+            router.push('/error?error=SessionExpired');
+
+            // router.replace('/401');
+        }
+    }, [status, router]); // Il trigger avviene solo al cambiamento di stato
+
+    if (status === 'unauthenticated') {
+        return null; //Evita bug grafici prima del redirect
+    }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();

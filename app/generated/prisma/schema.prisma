@@ -18,6 +18,7 @@ datasource db {
 model User {
   id                Int     @id @default(autoincrement())
   email             String  @unique @db.VarChar(64)
+  verified          Boolean @default(false)
   password          String? @db.VarChar(64)
   provider          String?
   providerAccountId String?

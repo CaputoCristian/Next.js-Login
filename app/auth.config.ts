@@ -1,5 +1,5 @@
 import { NextAuthConfig } from 'next-auth';
-import {createToken, getToken, createUserOAuth, getUser} from "@/app/db";
+import {createToken, getToken, createUserOAuth, getUser, verifyUser} from "@/app/db";
 import {compare} from "bcrypt-ts";
 import {now} from "effect/DateTime";
 
@@ -99,18 +99,15 @@ export const authConfig: NextAuthConfig = {
                 const tokenMatch = await compare(session.otp, record.token);
 
                 const ageMs = Date.now() - record.creation_time.getTime();
-                const maxAge = 5 * 60 * 1000;
+                const maxAge = 5 * 60 * 1000; // 5 minuti
 
                 if (tokenMatch && ageMs <= maxAge) {
+                    await verifyUser(token.email);
                     token.pending2FA = false; //Verifica riuscita
                     //TODO eliminazione token dal DB
                 } else {
-                    console.warn("Tentativo verifica OTP fallito o scaduto");
+                    console.error("Tentativo verifica OTP fallito o scaduto");
 
-                }
-
-                //Non fare nulla se l'aggiornamento non è necessario.
-                if (trigger === "update" && session?.pending2FA === false) {
                 }
 
                 console.log("[JWT - UPDATE TRIGGER] Token dopo modifica:", token);
