@@ -1,0 +1,59 @@
+@startuml
+autonumber
+skinparam sequenceMessageAlign center
+
+actor "Utente" as User
+box "Frontend" #LightBlue
+    participant "Login Page" as UI
+end box
+
+box "Backend (NextAuth)" #LightYellow
+    participant "/api/auth/..." as NextAuth
+    participant "Prisma Adapter" as Adapter
+end box
+
+box "Provider Esterno" #Orange
+    participant "Google / GitHub" as Provider
+end box
+
+box "Database" #LightGreen
+    database "Postgres" as DB
+end box
+
+User -> UI: Clicca su "Accedi con GitHub"
+activate UI
+UI -> NextAuth: Richiesta Login (signIn('github'))
+NextAuth -> Provider: Redirect verso Provider (OAuth Authorize)
+activate Provider
+
+note right of User: L'utente autorizza l'app\nsu GitHub/Google
+
+Provider -> NextAuth: Callback con "Authorization Code"
+deactivate Provider
+
+activate NextAuth
+
+NextAuth -> Provider: Scambia Code con Access Token + User Profile
+activate Provider
+Provider --> NextAuth: Restituisce { email, name, image, id }
+deactivate Provider
+
+group Logica Nuovo Utente
+    NextAuth -> DB: Check se utente esiste (by email)
+    activate DB
+
+    DB --> NextAuth: Nessun utente trovato
+    NextAuth -> DB: createUser(profile)
+
+    DB --> NextAuth: Oggetto User completo
+    deactivate DB
+end
+
+NextAuth -> NextAuth: Crea Sessione (JWT/Cookie)
+NextAuth --> UI: Success (Redirect URL)
+deactivate NextAuth
+
+UI -> User: Redirect to /verify
+deactivate UI
+
+@enduml

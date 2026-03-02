@@ -1,0 +1,42 @@
+@startuml
+skinparam style strictuml
+skinparam packageStyle rectangle
+
+package "Postgres DB (Prisma Schema)" {
+    class User {
+        +String id
+        +String email
+        +String password
+        +Boolean isTwoFactorEnabled
+    }
+
+    class TwoFactorToken {
+        +String id
+        +String email
+        +String token
+        +DateTime expires
+    }
+}
+
+package "NextAuth & Logic" {
+    class "JWT Callback" as JWT {
+        +Boolean pending2FA
+    }
+
+    class "TwoFactorAction" as TFA {
+        +generateToken(email)
+        +verifyToken(email, code)
+    }
+}
+
+package "Services" {
+    class ResendService {
+        +sendVerificationEmail(email, token)
+    }
+}
+
+User "1" -- "0..1" TwoFactorToken : "ha associato"
+TFA ..> TwoFactorToken : "crea/valida"
+TFA --> ResendService : "usa per invio"
+JWT ..> User : "legge stato 2FA"
+@enduml

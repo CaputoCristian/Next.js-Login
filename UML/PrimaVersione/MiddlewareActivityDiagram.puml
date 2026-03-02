@@ -1,0 +1,24 @@
+@startuml
+
+start
+
+:Utente richiede URL;
+
+if (URL è pubblico? \n(es. /login, /register, /static)) then (Si)
+    :Consenti Accesso;
+else (No, rotta protetta)
+    if (Esiste Token Sessione?\n(cookie next-auth.session-token)) then (Si)
+        :Verifica validità Token;
+        if (Token Valido?) then (Si)
+            :Consenti Accesso alla risorsa;
+        else (No)
+            :Redirect a /login;
+        endif
+    else (No)
+        :Redirect a /login;
+    endif
+endif
+
+stop
+
+@enduml

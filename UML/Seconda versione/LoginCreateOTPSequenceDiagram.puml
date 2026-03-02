@@ -1,0 +1,60 @@
+@startuml
+
+autonumber
+skinparam sequenceMessageAlign center
+
+actor "Utente" as User
+box "Frontend" #LightBlue
+    participant "LoginForm" as UI
+    participant "NextAuth (Client SDK)" as AuthClient
+end box
+
+box "Backend" #LightYellow
+    participant "NextAuth API\n(/api/auth/...)" as NextAPI
+    participant "/api/send-otp" as 2FA
+end box
+
+box "Database" #LightGreen
+    database "PostgresDB" as DB
+end box
+
+User -> UI: Inserisce Email, Password
+User -> UI: Clicca "Login"
+activate UI
+
+UI -> AuthClient: signIn("credentials", {email, password})
+activate AuthClient
+
+AuthClient -> NextAPI: POST /callback/credentials
+activate NextAPI
+
+NextAPI -> DB: FindUser(email)
+activate DB
+DB --> NextAPI: User Object (con hash password)
+deactivate DB
+
+NextAPI -> NextAPI: bcrypt.compare(pass, hash) -> True
+NextAPI -> NextAPI: Genera JWT Session Token
+NextAPI -> 2FA: generateToken(email)
+activate 2FA
+2FA -> DB: Salva OTP (Token + Scadenza)
+
+activate DB
+DB --> 2FA: Success
+deactivate DB
+
+2FA -> 2FA: Invia Email con codice
+activate 2FA
+deactivate 2FA
+2FA --> NextAPI: Success
+deactivate 2FA
+NextAPI -> AuthClient: Imposta JWT { pending2FA: true }
+deactivate NextAPI
+
+AuthClient --> UI: Success (Redirect URL)
+deactivate AuthClient
+
+UI -> User: Redirect to /verify
+deactivate UI
+
+@enduml

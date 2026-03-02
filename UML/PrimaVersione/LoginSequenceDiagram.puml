@@ -1,0 +1,54 @@
+@startuml
+
+autonumber
+skinparam sequenceMessageAlign center
+
+actor "Utente" as User
+box "Frontend (Client)" #LightBlue
+    participant "LoginForm" as UI
+    participant "NextAuth (Client SDK)" as AuthClient
+end box
+
+box "Backend (Server)" #LightYellow
+    participant "NextAuth API\n(/api/auth/...)" as NextAPI
+end box
+
+box "Database" #LightGreen
+    database "PostgresDB" as DB
+end box
+
+User -> UI: Inserisce Email, Password
+User -> UI: Clicca "Login"
+activate UI
+
+UI -> AuthClient: signIn("credentials", {email, password})
+activate AuthClient
+
+AuthClient -> NextAPI: POST /callback/credentials
+activate NextAPI
+
+note right of NextAPI: Esegue funzione 'authorize()'
+
+NextAPI -> DB: FindUser(email)
+activate DB
+DB --> NextAPI: User Object (con hash password)
+deactivate DB
+
+alt Utente non trovato O Password errata
+    NextAPI -> NextAPI: bcrypt.compare(pass, hash) -> False
+    NextAPI --> AuthClient: 401 Unauthorized
+    AuthClient --> UI: Return Error
+    UI --> User: "Invalid Credentials"
+else Credenziali Valide
+    NextAPI -> NextAPI: bcrypt.compare(pass, hash) -> True
+    NextAPI -> NextAPI: Genera JWT Session Token
+    NextAPI --> AuthClient: 200 OK + Set-Cookie (Session)
+    deactivate NextAPI
+
+    AuthClient --> UI: Success (Redirect URL)
+    deactivate AuthClient
+    UI -> User: Redirect to /home
+    deactivate UI
+end
+
+@enduml

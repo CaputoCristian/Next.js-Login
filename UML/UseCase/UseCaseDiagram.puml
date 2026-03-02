@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+
+actor Utente
+
+rectangle "Autenticazione" {
+    usecase "Accedi" as UC_LOGIN
+    usecase "Registrati" as UC_REGISTER
+    usecase "Accedi con provider" as UC_LOGINPROV
+    usecase "Verifica OTP" as UC_TFA
+    usecase "Autenticazione completata" as UC_DONE
+
+    usecase "Esci" as UC_LOGOUT
+
+
+}
+
+' Relazioni utente-caso d'uso
+Utente --> UC_LOGIN
+Utente --> UC_REGISTER
+Utente --> UC_LOGINPROV
+
+UC_LOGIN --> UC_TFA
+UC_REGISTER --> UC_TFA
+UC_LOGINPROV --> UC_TFA
+
+UC_TFA --> UC_DONE
+
+Utente --> UC_LOGOUT : <Utente autenticato>
+
+@enduml

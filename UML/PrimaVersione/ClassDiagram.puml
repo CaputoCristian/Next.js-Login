@@ -1,0 +1,66 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+
+package "Database Layer" {
+    class User {
+        +String name
+        +String email
+        +String password
+        +Date createdAt
+        +Date updatedAt
+    }
+}
+
+package "Client Side" {
+    class RegisterPage {
+        -String name
+        -String email
+        -String password
+        +handleSubmit()
+        +render()
+    }
+
+    class LoginPage {
+        -String email
+        -String password
+        +handleSubmit()
+        +render()
+    }
+
+    class DashboardPage {
+        <<Protected>>
+        +Session sessionData
+        +render()
+    }
+}
+
+package "Server Side" {
+    class RegisterAPI <<Endpoint>> {
+        +POST(req)
+        -validateInput()
+        -hashPassword()
+        -createUser()
+    }
+
+    class NextAuthConfig <<Configuration>> {
+        +CredentialsProvider
+        +authorize(credentials)
+        +pages configuration
+    }
+
+    class Middleware {
+        +matcher
+        +middleware(request)
+    }
+}
+
+' Relazioni
+RegisterPage ..> RegisterAPI : "Chiama /api/register"
+LoginPage ..> NextAuthConfig : "Chiama signIn()"
+RegisterAPI ..> User : "Crea"
+NextAuthConfig ..> User : "Verifica Credenziali"
+Middleware ..> DashboardPage : "Protegge Accesso"
+
+@enduml

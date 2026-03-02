@@ -1,0 +1,45 @@
+@startuml
+autonumber
+skinparam sequenceMessageAlign center
+actor "Utente" as User
+
+box "Frontend (Client)" #LightBlue
+    participant "VerifyForm" as UI
+end box
+
+box "Backend (Server)" #LightYellow
+    participant "/api/verify" as API
+end box
+
+box "Database" #LightGreen
+    database "PostgresDB" as DB
+end box
+
+activate UI
+User -> UI: Inserisce Codice a 6 cifre
+
+UI -> API: verify2FA(email, code)
+activate API
+
+API -> DB: getToken(email)
+activate DB
+DB --> API: Record Object (Con hash)
+deactivate DB
+
+alt Codice Errato
+    API -> API: bcrypt.compare(token, hash) -> False
+
+    API --> UI: 400 Bad Request (Invalid Code)
+    UI --> User: Mostra "Codice non valido"
+
+else Codice Corretto e non Scaduto
+
+    API -> API: bcrypt.compare(token, hash) -> True
+    API -> API: checkScadenza(token) -> True
+
+    API -> API: Aggiorna JWT Session\n{ pending2FA: false }
+    API --> UI: 200 OK (Verified)
+    UI -> User: Redirect a /home
+
+end
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+
+autonumber
+skinparam sequenceMessageAlign center
+
+actor "Utente" as User
+box "Frontend (Client)" #LightBlue
+    participant "RegisterForm" as UI
+end box
+
+box "Backend (Server)" #LightYellow
+    participant "/api/register" as API
+end box
+
+box "Database" #LightGreen
+    database "PostgresDB" as DB
+end box
+
+User -> UI: Inserisce Nome, Email, Password
+User -> UI: Clicca "Register"
+activate UI
+
+UI -> API: POST {name, email, password}
+activate API
+
+group Verifica Esistenza
+    API -> DB: FindUser(email)
+    activate DB
+    DB --> API: Risultato (null o User)
+    deactivate DB
+end
+
+alt Utente esiste già
+    API --> UI: 400 Bad Request ("User already exists")
+    UI --> User: Mostra errore a video
+else Nuovo Utente
+    API -> API: Hash Password (bcrypt)
+    API -> DB: CreateUser({name, email, hashedPassword})
+    activate DB
+    DB --> API: Success
+    deactivate DB
+
+    API --> UI: 201 Created
+    deactivate API
+    UI --> User: Redirect to /login
+    deactivate UI
+end
+
+@enduml
